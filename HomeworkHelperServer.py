@@ -34,6 +34,8 @@ def getCurrentFile(Id):
 		print("File error")
 
 	lines = f.read()
+	if lines == "":
+		lines = "None"
 		
 	return lines
 
@@ -116,4 +118,8 @@ def main():
 
 		
 if __name__ == '__main__':
-	main()
+	while True:
+		try:
+			main()
+		except:
+			print(traceback.format_exc())
