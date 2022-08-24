@@ -68,6 +68,7 @@ def loadId():
 
 
 def getData():
+  print("Downloading data from server")
   while True:
     strlen = server.recv(8).decode("utf-8")
     length = int(strlen) - 10000000 # added this so that the bytes size is always the same 
@@ -79,11 +80,13 @@ def getData():
       left -= len(newpart)
       b += newpart
       # print("{}b out of {}b: {}%".format(len(b),length,round((len(b)/length)*10000)/100))
+    print("Data downloaded")
     return b.decode('utf-8')
 
 
 # load the assignments list from a file
 def loadFromFile(file_name="homeworkfile.txt"):	
+  print("Loading data from file")
   assignments = []
   # this make its ok to do files stuff once its an exe
   if getattr(sys, 'frozen', False):
@@ -127,7 +130,7 @@ def load():
     if len(line) == 4:
       print(line)
       assignments.append(Assignment(line[0], line[1], line[2], line[3]))
-    
+
   return assignments
 
 
@@ -232,7 +235,7 @@ def start_screen(window, assignments):
     window.screen.blit(assignment_text, assignment_rect)
   else:
     for assignment in assignments:
-      assignment_text = small_text.render(str(num_assignments + 1) + ". " + assignment.__str__(),True,text_color)
+      assignment_text = small_text.render(str(num_assignments) + ". " + assignment.__str__(),True,text_color)
       assignment_rect = text.get_rect(center=(150, 100 + space*num_assignments))
 
       window.screen.blit(assignment_text, assignment_rect)
@@ -443,26 +446,35 @@ def getID():
   except: # this means that the id file doesnt exist
     return "1"
 
+
+def loadIp():
+  try:
+    with open("ServerIP.txt", "r") as f:
+      return f.read().replace("\n","")
+  except: # this means that the ServerIP file doesnt exist
+    return "1"
+
 # this will connect to the server and ensure that the server knows we are still connected
 def serverConnection():
   global loadedOffline
-  server = None
+  global assignments
+  global server
   Id = getID()
   while True: # try to connect
     try:
       print("Trying to connect to server")
-      serverIp = "71.105.82.137"
+      serverIp = loadIp()
       server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       server.settimeout(5) # 5 seconds need this so that ctrl c works
       server.connect((serverIp, 51153))
       server.send(Id.encode('utf-8'))
+      print("Sent Id")
       if noEditsMade:
         assignments = load()
       return server, Id
     except:
       print(traceback.format_exc())
       if not loadedOffline:
-        print("here")
         assignments = load()
         loadedOffline = True
       if stopThreads:
