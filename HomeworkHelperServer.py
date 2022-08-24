@@ -102,7 +102,7 @@ def main():
 	global connectedPIs
 	threads = []
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.bind(("192.168.1.241", 51153))
+	s.bind(("192.168.1.232", 51153))
 	s.listen(5)
 	c = []
 	while True:
