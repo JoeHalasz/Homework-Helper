@@ -29,8 +29,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 HWND children[1024];
 int numChildren = 0;
 
-int WIDTH = 600;
-int HEIGHT = 750;
+int WIDTH = 450;
+int HEIGHT = 650;
+
+
 
 RECT editSize = {0,0,0,0};
 
@@ -108,10 +110,11 @@ BOOL CALLBACK EnumChildProc(HWND hwndChild, LPARAM lParam)
 }
 
 int first = 0;
+int BUTTON_WIDTH = 120;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	HWND static hwndTextBox,hwndTitle;
+	HWND static hwndTextBox, hwndTitle, hwndButtonAdd, hwndButtonRemove, hwndButtonMove, hwndHelpMessage;
 	RECT rcClient;
 	RECT MainRect;
 	int width = WIDTH;
@@ -123,44 +126,108 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			GetWindowRect(hwnd, &MainRect);
 			width = MainRect.right - MainRect.left;
 			height = MainRect.bottom - MainRect.top;
-			SetWindowPos(children[0], hwnd, 20, height-100, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
-			SetWindowPos(children[1], hwnd, (width/2) - 120, 20, 240, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
-		
+			// help message
+			SetWindowPos(children[0], hwnd, 20, height-175, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			// title
+			SetWindowPos(children[1], hwnd, (width/2) - 150, 20, 300, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			// text box
+			SetWindowPos(children[2], hwnd, 20, height-145, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			// add button
+			SetWindowPos(children[3], hwnd, 20, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			// remove button
+			SetWindowPos(children[4], hwnd, (width/2)-(BUTTON_WIDTH/2)-10, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			// move button
+			SetWindowPos(children[5], hwnd, (width - BUTTON_WIDTH) - 40, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			
 		case WM_CREATE:
 
-			hwndTextBox = CreateWindow( // text box
-				TEXT("edit"), NULL,WS_CHILD | WS_BORDER, 
-				20, height-100, width - 60, 40, 
+			hwndHelpMessage = CreateWindow( // help message
+				"STATIC", TEXT("Name  Weekday  Day_number  Month(blank if n/a)"),WS_CHILD, 
+				0,0,0,0, // pos is created by the WM_SIZE above
 				hwnd, (HMENU) 1,NULL, NULL
 			);
-			children[numChildren++] = hwndTextBox;
-			
+			children[numChildren++] = hwndHelpMessage;
+	
 			hwndTitle = CreateWindow( // title at the top 
 				"STATIC", "Homework Helper",WS_CHILD, 
-				(width/2) - 120, 20, 240, 40, 
+				0,0,0,0, // pos is created by the WM_SIZE above
 				hwnd, (HMENU) 1,NULL, NULL
 			);
 			children[numChildren++] = hwndTitle;
 
-			// TODO add buttons that edit the type in bar like below
-			// hwndButton = CreateWindow(TEXT("button"), TEXT("Set title"),WS_VISIBLE |  WS_CHILD, 20, 400, 80, 30,hwnd, (HMENU) 2, NULL, NULL);//click button
+			hwndTextBox = CreateWindow( // text box
+				TEXT("edit"), NULL,WS_CHILD | WS_BORDER, 
+				0,0,0,0, // pos is created by the WM_SIZE above
+				hwnd, (HMENU) 1,NULL, NULL
+			);
+			children[numChildren++] = hwndTextBox;
+
+			hwndButtonAdd = CreateWindow( // add button
+				TEXT("button"), TEXT("Add"),WS_CHILD, 
+				0,0,0,0, // pos is created by the WM_SIZE above
+				hwnd, (HMENU) 2,NULL, NULL
+			);
+			children[numChildren++] = hwndButtonAdd;
+
+			hwndButtonRemove = CreateWindow( // remove button
+				TEXT("button"), TEXT("Remove"),WS_CHILD, 
+				0,0,0,0, // pos is created by the WM_SIZE above
+				hwnd, (HMENU) 2,NULL, NULL
+			);
+			children[numChildren++] = hwndButtonRemove;
+
+			hwndButtonMove = CreateWindow( // move button
+				TEXT("button"), TEXT("Move"),WS_CHILD, 
+				0,0,0,0, // pos is created by the WM_SIZE above
+				hwnd, (HMENU) 2,NULL, NULL
+			);
+			children[numChildren++] = hwndButtonMove;
+			
 			
 			// create a font for the title and text box
 			LOGFONT logfont; 
 			ZeroMemory(&logfont, sizeof(LOGFONT));
-			logfont.lfCharSet = DEFAULT_CHARSET;
-			logfont.lfHeight = -30; 
+			logfont.lfHeight = -35; 
+			HFONT hFont = CreateFontIndirect(&logfont);
+			ZeroMemory(&logfont, sizeof(LOGFONT));
+			logfont.lfHeight = -17; 
 			HFONT hFont2 = CreateFontIndirect(&logfont);
+			ZeroMemory(&logfont, sizeof(LOGFONT));
+			logfont.lfHeight = -30;
+			HFONT hFont3 = CreateFontIndirect(&logfont);
 
-			SendMessage(hwndTextBox, WM_SETFONT, (WPARAM)hFont2, TRUE); // set font for text box
+			SendMessage(hwndTextBox, WM_SETFONT, (WPARAM)hFont3, TRUE); // set font for text box
 			
-			SendMessage(hwndTitle, WM_SETFONT, (WPARAM)hFont2, TRUE);
-			SendMessage(hwndTitle, WM_CTLCOLORSTATIC, (WPARAM)RGB(255,0,0), TRUE);
+			// set fonts
+			SendMessage(hwndTitle, WM_SETFONT, (WPARAM)hFont, TRUE);
+			SendMessage(hwndHelpMessage, WM_SETFONT, (WPARAM)hFont2, TRUE);
+			SendMessage(hwndButtonAdd, WM_SETFONT, (WPARAM)hFont2, TRUE);
+			SendMessage(hwndButtonRemove, WM_SETFONT, (WPARAM)hFont2, TRUE);
+			SendMessage(hwndButtonMove, WM_SETFONT, (WPARAM)hFont2, TRUE);
+
+			// set text and background colors
+			SendMessage(hwndTitle, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
+			SendMessage(hwndButtonAdd, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
+			SendMessage(hwndButtonRemove, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
+			SendMessage(hwndButtonMove, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
+			SendMessage(hwndHelpMessage, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
+			// SendMessage(hwndButtonAdd, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
+			
 			break;
+
 		case WM_CTLCOLORSTATIC: // set background color for the title
-                SetBkColor((HDC)wParam, RGB(255,255,255));
-                SetTextColor((HDC)wParam, RGB(0,0,0));
-                return (LRESULT)CreateSolidBrush(RGB(255,255,255));
+                SetBkColor((HDC)wParam, RGB(60, 60, 60));
+                SetTextColor((HDC)wParam, RGB(255,255,255));
+                return (LRESULT)CreateSolidBrush(RGB(60, 60, 60));
+		case WM_ERASEBKGND: {
+			HDC hdc = (HDC)(wParam); 
+			RECT rc; 
+			GetClientRect(hwnd, &rc); 
+			HBRUSH brush = CreateSolidBrush(RGB(60, 60, 60));// grey
+			FillRect(hdc, &rc, brush); 
+			DeleteObject(brush); // Free the created brush: see note below!
+			return TRUE;
+		}
 		case WM_COMMAND:
 			// TODO responds to button click
 			// if (HIWORD(wParam) == BN_CLICKED) {
