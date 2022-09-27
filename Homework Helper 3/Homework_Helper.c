@@ -1,0 +1,159 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <stdio.h>
+
+
+// BELOW THIS IS STUFF TO MAKE THE WINDOW
+
+#include <windows.h>
+
+
+HWND hwnd;
+LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
+HWND children[1024];
+int numChildren = 0;
+
+int WIDTH = 600;
+int HEIGHT = 750;
+
+RECT editSize = {0,0,0,0};
+
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+	editSize.left = 1920 - WIDTH - 25;
+	editSize.top = 25;
+	editSize.right = editSize.left + WIDTH;
+	editSize.bottom = editSize.top + HEIGHT;
+
+  	MSG         Msg;
+    WNDCLASSEX  WndClsEx = {0};
+
+    WndClsEx.cbSize        = sizeof (WNDCLASSEX);
+    WndClsEx.style         = CS_HREDRAW | CS_VREDRAW;
+    WndClsEx.lpfnWndProc   = WndProc;
+    WndClsEx.hInstance     = hInstance;
+    WndClsEx.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+    WndClsEx.lpszClassName = "ClassName";
+    WndClsEx.hIconSm       = LoadIcon(hInstance, IDI_APPLICATION);
+
+    RegisterClassEx(&WndClsEx);
+
+    hwnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW,
+                          "ClassName",
+                          "Homework Helper",
+                          WS_OVERLAPPEDWINDOW,
+                          1920 - WIDTH - 25,
+                          25,
+                          WIDTH,
+                          HEIGHT,
+                          NULL,
+                          NULL,
+                          hInstance,
+                          NULL);
+
+    ShowWindow(hwnd, nShowCmd);
+    UpdateWindow(hwnd);
+
+    while(GetMessage(&Msg, NULL, 0, 0))
+    {
+        TranslateMessage(&Msg);
+        DispatchMessage(&Msg);
+    }
+	return 0;
+}
+
+#define ID_Edit1  200 
+
+
+BOOL CALLBACK EnumChildProc(HWND hwndChild, LPARAM lParam)
+{
+    int idChild;
+    idChild = GetWindowLong(hwndChild, GWL_ID);
+    LPRECT rcParent;
+    rcParent = (LPRECT)lParam;
+
+    if (idChild == ID_Edit1) {
+
+        //Calculate the change ratio
+        double cxRate = rcParent->right * 1.0 / WIDTH; //884 is width of client area
+        double cyRate = rcParent->bottom * 1.0 / HEIGHT; //641 is height of client area
+
+        LONG newRight = editSize.left * cxRate;
+        LONG newTop = editSize.top * cyRate;
+        LONG newWidth = editSize.right * cxRate;
+        LONG newHeight = editSize.bottom * cyRate;
+
+        MoveWindow(hwndChild, newRight, newTop, newWidth, newHeight, TRUE);
+
+        // Make sure the child window is visible. 
+        ShowWindow(hwndChild, SW_SHOW);
+    }
+    return TRUE;
+}
+
+int first = 0;
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	HWND static hwndEdit,hwndButton,hwndStatic;
+	RECT rcClient;
+	RECT MainRect;
+	int width = WIDTH;
+	int height = HEIGHT;
+    switch(Msg) 
+	{
+		case WM_SIZE:
+			GetWindowRect(hwnd, &MainRect);
+			width = MainRect.right - MainRect.left;
+			height = MainRect.bottom - MainRect.top;
+			SetWindowPos(children[0], hwnd, 20, height-100, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+		case WM_CREATE:
+			hwndEdit = CreateWindow(TEXT("edit"), NULL,WS_CHILD | WS_BORDER, 20, height-100, width - 60, 40, hwnd, (HMENU) 1,NULL, NULL);//edit control
+			children[numChildren++] = hwndEdit;
+			// hwndButton = CreateWindow(TEXT("button"), TEXT("Set title"),WS_VISIBLE |  WS_CHILD, 20, 400, 80, 30,hwnd, (HMENU) 2, NULL, NULL);//click button
+			LOGFONT logfont; 
+			ZeroMemory(&logfont, sizeof(LOGFONT));
+			logfont.lfCharSet = DEFAULT_CHARSET;
+			logfont.lfHeight = -30; 
+			HFONT hFont = CreateFontIndirect(&logfont);
+
+			SendMessage(hwndEdit, WM_SETFONT, (WPARAM)hFont, TRUE);
+			break;
+		case WM_COMMAND:
+			//responds to button click
+			if (HIWORD(wParam) == BN_CLICKED) {
+				const int maxtextlength = 30;
+				TCHAR textvalue[100] = TEXT("");
+				//gets value of textbox and stores in  'textvalue'
+				GetWindowText(hwndEdit, textvalue, maxtextlength);
+				//changes text in static box to value in 'textvalue'
+				SetWindowText(hwndStatic, textvalue);
+			}
+			break;
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
+		default:
+			return DefWindowProc(hwnd, Msg, wParam, lParam);
+    }
+    return 0;
+}
+
+
+
