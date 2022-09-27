@@ -111,11 +111,12 @@ int first = 0;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	HWND static hwndEdit,hwndButton,hwndStatic;
+	HWND static hwndTextBox,hwndTitle;
 	RECT rcClient;
 	RECT MainRect;
 	int width = WIDTH;
 	int height = HEIGHT;
+	RECT rc;
     switch(Msg) 
 	{
 		case WM_SIZE:
@@ -123,28 +124,53 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			width = MainRect.right - MainRect.left;
 			height = MainRect.bottom - MainRect.top;
 			SetWindowPos(children[0], hwnd, 20, height-100, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(children[1], hwnd, (width/2) - 120, 20, 240, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+		
 		case WM_CREATE:
-			hwndEdit = CreateWindow(TEXT("edit"), NULL,WS_CHILD | WS_BORDER, 20, height-100, width - 60, 40, hwnd, (HMENU) 1,NULL, NULL);//edit control
-			children[numChildren++] = hwndEdit;
+
+			hwndTextBox = CreateWindow( // text box
+				TEXT("edit"), NULL,WS_CHILD | WS_BORDER, 
+				20, height-100, width - 60, 40, 
+				hwnd, (HMENU) 1,NULL, NULL
+			);
+			children[numChildren++] = hwndTextBox;
+			
+			hwndTitle = CreateWindow( // title at the top 
+				"STATIC", "Homework Helper",WS_CHILD, 
+				(width/2) - 120, 20, 240, 40, 
+				hwnd, (HMENU) 1,NULL, NULL
+			);
+			children[numChildren++] = hwndTitle;
+
+			// TODO add buttons that edit the type in bar like below
 			// hwndButton = CreateWindow(TEXT("button"), TEXT("Set title"),WS_VISIBLE |  WS_CHILD, 20, 400, 80, 30,hwnd, (HMENU) 2, NULL, NULL);//click button
+			
+			// create a font for the title and text box
 			LOGFONT logfont; 
 			ZeroMemory(&logfont, sizeof(LOGFONT));
 			logfont.lfCharSet = DEFAULT_CHARSET;
 			logfont.lfHeight = -30; 
-			HFONT hFont = CreateFontIndirect(&logfont);
+			HFONT hFont2 = CreateFontIndirect(&logfont);
 
-			SendMessage(hwndEdit, WM_SETFONT, (WPARAM)hFont, TRUE);
+			SendMessage(hwndTextBox, WM_SETFONT, (WPARAM)hFont2, TRUE); // set font for text box
+			
+			SendMessage(hwndTitle, WM_SETFONT, (WPARAM)hFont2, TRUE);
+			SendMessage(hwndTitle, WM_CTLCOLORSTATIC, (WPARAM)RGB(255,0,0), TRUE);
 			break;
+		case WM_CTLCOLORSTATIC: // set background color for the title
+                SetBkColor((HDC)wParam, RGB(255,255,255));
+                SetTextColor((HDC)wParam, RGB(0,0,0));
+                return (LRESULT)CreateSolidBrush(RGB(255,255,255));
 		case WM_COMMAND:
-			//responds to button click
-			if (HIWORD(wParam) == BN_CLICKED) {
-				const int maxtextlength = 30;
-				TCHAR textvalue[100] = TEXT("");
-				//gets value of textbox and stores in  'textvalue'
-				GetWindowText(hwndEdit, textvalue, maxtextlength);
-				//changes text in static box to value in 'textvalue'
-				SetWindowText(hwndStatic, textvalue);
-			}
+			// TODO responds to button click
+			// if (HIWORD(wParam) == BN_CLICKED) {
+			// 	const int maxtextlength = 30;
+			// 	TCHAR textvalue[100] = TEXT("");
+			// 	//gets value of textbox and stores in  'textvalue'
+			// 	GetWindowText(hwndTextBox, textvalue, maxtextlength);
+			// 	//changes text in static box to value in 'textvalue'
+			// 	SetWindowText(hwndStatic, textvalue);
+			// }
 			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
