@@ -1,35 +1,228 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include <windows.h>
 
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define try bool __HadError=false;
+#define catch(x) ExitJmp:if(__HadError)
+#define throw(x) {__HadError=true;goto ExitJmp;}
+
+
+
+HWND windowElements[1024];
+
+int NUM_ITEMS = 1;
+
+void eraseTextBox(){
+	SetWindowText(windowElements[3], "");
+}
+
+int AddButtonPressed(){
+	printf("add button pressed\n");	
+	
+	TCHAR text[1024] = TEXT("");
+	TCHAR typed[1024] = TEXT("");
+	GetWindowText(windowElements[0], text, 1024*1024);
+	GetWindowText(windowElements[3], typed, 1024*1024);
+	
+	char numItems[10] = "";
+	sprintf(numItems, "%d", NUM_ITEMS);
+
+	strcat(text, "\n");
+	strcat(text, numItems);
+	strcat(text, ". ");
+	strcat(text, typed);
+	
+	if (SetWindowText(windowElements[0], text) == TRUE){
+		NUM_ITEMS++;
+		eraseTextBox();
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+int RemoveButtonPressed(){
+	printf("remove button pressed\n");
+
+	int counter = 0;
+	int intTyped;
+
+	TCHAR text[1024] = TEXT("");
+	TCHAR typed[1024] = TEXT("");
+	TCHAR newText[1024] = TEXT("");
+	GetWindowText(windowElements[0], text, 1024*1024);
+	GetWindowText(windowElements[3], typed, 1024*1024);
+	
+	
+	try{
+		intTyped = atoi(typed);
+	}
+	catch(){
+		printf("Tried to remove without a number\n");
+		eraseTextBox();
+		return FALSE;
+	}
+
+	if (intTyped >= NUM_ITEMS || intTyped < 0){
+		printf("Tried to remove with an invalid number\n");
+		eraseTextBox();
+		return FALSE;
+	}
+
+	char* pch = NULL;
+    pch = strtok(text, "\n");
+	char intCounter[10] = "";
+
+    while (pch != NULL)
+    {
+		counter++;
+		if (counter == intTyped){
+			intTyped = -1;
+			counter--;
+			pch = strtok(NULL, "\n");	
+			continue;
+		}
+		
+		sprintf(intCounter, "%d", counter);
+		memmove(pch, pch+3, strlen(pch));
+
+		strcat(newText, "\n");
+		strcat(newText, intCounter);
+		strcat(newText, ". ");
+		strcat(newText, pch);
+		
+        pch = strtok(NULL, "\n");	
+    }
+
+	if (SetWindowText(windowElements[0], newText) == TRUE){
+		NUM_ITEMS--;
+		eraseTextBox();
+		return TRUE;
+	}
+
+	return TRUE;
+
+}
+
+
+int MoveButtonPressed(){
+	printf("move button pressed\n");
+	
+	int counter = 0;
+	int intTyped;
+	int intTyped2;
+
+	TCHAR saveText[1024] = TEXT("");
+	TCHAR saveText2[1024] = TEXT("");
+
+	TCHAR text[1024] = TEXT("");
+	TCHAR typed[1024] = TEXT("");
+	TCHAR newText[1024] = TEXT("");
+	GetWindowText(windowElements[0], text, 1024*1024);
+	GetWindowText(windowElements[3], typed, 1024*1024);
+	
+	
+	char* pch = NULL;
+    pch = strtok(typed, " ");
+	char intCounter[10] = "";
+
+	try{
+		intTyped = atoi(pch);
+		pch = strtok(NULL, " ");
+		intTyped2 = atoi(pch);
+	}
+	catch(){
+		printf("User typed something wrong");
+		eraseTextBox();
+		return false;
+	}
+
+	printf("HERE %d %d\n", intTyped, intTyped2);
+
+	if (intTyped >= NUM_ITEMS || intTyped < 0 || intTyped2 >= NUM_ITEMS || intTyped2 < 0){
+		printf("Tried to move with an invalid number\n");
+		eraseTextBox();
+		return FALSE;
+	}
+
+	pch = strtok(text, "\n");
+	while (pch != NULL)
+    {
+		counter++;
+		
+		if (counter == intTyped){
+			memmove(pch, pch+3, strlen(pch));
+			strcpy(saveText, pch);
+		}
+		if (counter == intTyped2){
+			memmove(pch, pch+3, strlen(pch));
+			strcpy(saveText2, pch);
+		}
+		pch = strtok(NULL, "\n");
+
+
+	}
+
+	counter = 0;
+	printf("[%s] [%s]\n", saveText, saveText2);
+	pch = strtok(text, "\n");
+	
+    while (pch != NULL)
+    {
+		// todo fix this idk whats wrong
+		counter++;
+		sprintf(intCounter, "%d", counter);
+		if (counter == intTyped){
+			intTyped = -1;
+			strcat(newText, "\n");
+			strcat(newText, intCounter);
+			strcat(newText, ". ");
+			strcat(newText, saveText);
+		}
+		else if (counter == intTyped2){
+			intTyped2 = -1;
+			strcat(newText, "\n");
+			strcat(newText, intCounter);
+			strcat(newText, ". ");
+			strcat(newText, saveText2);
+		}
+		else{
+			memmove(pch, pch+3, strlen(pch));
+
+			strcat(newText, "\n");
+			strcat(newText, intCounter);
+			strcat(newText, ". ");
+			strcat(newText, pch);
+		}
+		
+        pch = strtok(NULL, "\n");	
+    }
+	printf("%s\n", newText);
+
+	if (SetWindowText(windowElements[0], newText) == TRUE){
+		eraseTextBox();
+		return TRUE;
+	}
+	return FALSE;
+}
+
 
 
 // BELOW THIS IS STUFF TO MAKE THE WINDOW
 
-#include <windows.h>
+
 
 
 HWND hwnd;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
-HWND children[1024];
+
 int numChildren = 0;
 
-int WIDTH = 450;
+int WIDTH = 475;
 int HEIGHT = 650;
 
 
@@ -111,77 +304,92 @@ BOOL CALLBACK EnumChildProc(HWND hwndChild, LPARAM lParam)
 
 int first = 0;
 int BUTTON_WIDTH = 120;
+int ADD_BUTTON_ID = 101;
+int REMOVE_BUTTON_ID = 102;
+int MOVE_BUTTON_ID = 103;
+
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	HWND static hwndTextBox, hwndTitle, hwndButtonAdd, hwndButtonRemove, hwndButtonMove, hwndHelpMessage;
+	HWND static hwndTextBox, hwndTitle, hwndButtonAdd, hwndButtonRemove, hwndButtonMove, hwndHelpMessage, hwndHomeworkList;
 	RECT rcClient;
 	RECT MainRect;
 	int width = WIDTH;
 	int height = HEIGHT;
 	RECT rc;
+	int counter = 0;
     switch(Msg) 
 	{
 		case WM_SIZE:
 			GetWindowRect(hwnd, &MainRect);
 			width = MainRect.right - MainRect.left;
 			height = MainRect.bottom - MainRect.top;
+
+			// homework list
+			SetWindowPos(windowElements[counter++], hwnd, 20, 60, width - 40, height-260, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// help message
-			SetWindowPos(children[0], hwnd, 20, height-175, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(windowElements[counter++], hwnd, 20, height-175, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// title
-			SetWindowPos(children[1], hwnd, (width/2) - 150, 20, 300, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(windowElements[counter++], hwnd, (width/2) - 150, 20, 300, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// text box
-			SetWindowPos(children[2], hwnd, 20, height-145, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(windowElements[counter++], hwnd, 20, height-145, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// add button
-			SetWindowPos(children[3], hwnd, 20, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(windowElements[counter++], hwnd, 20, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// remove button
-			SetWindowPos(children[4], hwnd, (width/2)-(BUTTON_WIDTH/2)-10, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(windowElements[counter++], hwnd, (width/2)-(BUTTON_WIDTH/2)-10, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// move button
-			SetWindowPos(children[5], hwnd, (width - BUTTON_WIDTH) - 40, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(windowElements[counter++], hwnd, (width - BUTTON_WIDTH) - 40, height-100, BUTTON_WIDTH, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			
 		case WM_CREATE:
+
+			hwndHomeworkList = CreateWindow( // homework list
+				"STATIC", "",WS_CHILD, 
+				0,0,0,0, // pos is created by the WM_SIZE above
+				hwnd, (HMENU) 1, NULL, NULL
+			);
+			windowElements[numChildren++] = hwndHomeworkList;
 
 			hwndHelpMessage = CreateWindow( // help message
 				"STATIC", TEXT("Name  Weekday  Day_number  Month(blank if n/a)"),WS_CHILD, 
 				0,0,0,0, // pos is created by the WM_SIZE above
 				hwnd, (HMENU) 1,NULL, NULL
 			);
-			children[numChildren++] = hwndHelpMessage;
+			windowElements[numChildren++] = hwndHelpMessage;
 	
 			hwndTitle = CreateWindow( // title at the top 
 				"STATIC", "Homework Helper",WS_CHILD, 
 				0,0,0,0, // pos is created by the WM_SIZE above
 				hwnd, (HMENU) 1,NULL, NULL
 			);
-			children[numChildren++] = hwndTitle;
+			windowElements[numChildren++] = hwndTitle;
 
 			hwndTextBox = CreateWindow( // text box
-				TEXT("edit"), NULL,WS_CHILD | WS_BORDER, 
+				"edit", NULL,WS_CHILD | WS_BORDER  | ES_MULTILINE | ES_AUTOHSCROLL,
 				0,0,0,0, // pos is created by the WM_SIZE above
 				hwnd, (HMENU) 1,NULL, NULL
 			);
-			children[numChildren++] = hwndTextBox;
+			windowElements[numChildren++] = hwndTextBox;
 
 			hwndButtonAdd = CreateWindow( // add button
-				TEXT("button"), TEXT("Add"),WS_CHILD, 
+				"button", "Add",WS_CHILD, 
 				0,0,0,0, // pos is created by the WM_SIZE above
-				hwnd, (HMENU) 2,NULL, NULL
+				hwnd, (HMENU) ADD_BUTTON_ID,NULL, NULL
 			);
-			children[numChildren++] = hwndButtonAdd;
+			windowElements[numChildren++] = hwndButtonAdd;
 
 			hwndButtonRemove = CreateWindow( // remove button
-				TEXT("button"), TEXT("Remove"),WS_CHILD, 
+			"button", "Remove",WS_CHILD, 
 				0,0,0,0, // pos is created by the WM_SIZE above
-				hwnd, (HMENU) 2,NULL, NULL
+				hwnd, (HMENU) REMOVE_BUTTON_ID,NULL, NULL
 			);
-			children[numChildren++] = hwndButtonRemove;
+			windowElements[numChildren++] = hwndButtonRemove;
 
 			hwndButtonMove = CreateWindow( // move button
-				TEXT("button"), TEXT("Move"),WS_CHILD, 
+				"button", "Move",WS_CHILD, 
 				0,0,0,0, // pos is created by the WM_SIZE above
-				hwnd, (HMENU) 2,NULL, NULL
+				hwnd, (HMENU) MOVE_BUTTON_ID,NULL, NULL
 			);
-			children[numChildren++] = hwndButtonMove;
+			windowElements[numChildren++] = hwndButtonMove;
 			
 			
 			// create a font for the title and text box
@@ -196,48 +404,47 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			logfont.lfHeight = -30;
 			HFONT hFont3 = CreateFontIndirect(&logfont);
 
-			SendMessage(hwndTextBox, WM_SETFONT, (WPARAM)hFont3, TRUE); // set font for text box
 			
 			// set fonts
+			SendMessage(hwndTextBox, WM_SETFONT, (WPARAM)hFont3, TRUE);			
 			SendMessage(hwndTitle, WM_SETFONT, (WPARAM)hFont, TRUE);
 			SendMessage(hwndHelpMessage, WM_SETFONT, (WPARAM)hFont2, TRUE);
 			SendMessage(hwndButtonAdd, WM_SETFONT, (WPARAM)hFont2, TRUE);
 			SendMessage(hwndButtonRemove, WM_SETFONT, (WPARAM)hFont2, TRUE);
 			SendMessage(hwndButtonMove, WM_SETFONT, (WPARAM)hFont2, TRUE);
+			SendMessage(hwndHomeworkList, WM_SETFONT, (WPARAM)hFont3, TRUE);
 
 			// set text and background colors
 			SendMessage(hwndTitle, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
 			SendMessage(hwndButtonAdd, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
 			SendMessage(hwndButtonRemove, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
 			SendMessage(hwndButtonMove, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
-			SendMessage(hwndHelpMessage, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
-			// SendMessage(hwndButtonAdd, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);
-			
+			SendMessage(hwndHelpMessage, WM_CTLCOLORSTATIC, (WPARAM)RGB(0,0,0), TRUE);			
 			break;
 
 		case WM_CTLCOLORSTATIC: // set background color for the title
-                SetBkColor((HDC)wParam, RGB(60, 60, 60));
-                SetTextColor((HDC)wParam, RGB(255,255,255));
-                return (LRESULT)CreateSolidBrush(RGB(60, 60, 60));
-		case WM_ERASEBKGND: {
+			SetBkColor((HDC)wParam, RGB(60, 60, 60));
+			SetTextColor((HDC)wParam, RGB(255,255,255));
+			return (LRESULT)CreateSolidBrush(RGB(60, 60, 60));
+		case WM_ERASEBKGND:{
 			HDC hdc = (HDC)(wParam); 
-			RECT rc; 
+			RECT rc;
 			GetClientRect(hwnd, &rc); 
 			HBRUSH brush = CreateSolidBrush(RGB(60, 60, 60));// grey
 			FillRect(hdc, &rc, brush); 
-			DeleteObject(brush); // Free the created brush: see note below!
-			return TRUE;
+			DeleteObject(brush); 
 		}
 		case WM_COMMAND:
 			// TODO responds to button click
-			// if (HIWORD(wParam) == BN_CLICKED) {
-			// 	const int maxtextlength = 30;
-			// 	TCHAR textvalue[100] = TEXT("");
-			// 	//gets value of textbox and stores in  'textvalue'
-			// 	GetWindowText(hwndTextBox, textvalue, maxtextlength);
-			// 	//changes text in static box to value in 'textvalue'
-			// 	SetWindowText(hwndStatic, textvalue);
-			// }
+			if (LOWORD(wParam) == ADD_BUTTON_ID) { // add button
+				AddButtonPressed();
+			}
+			else if (LOWORD(wParam) == REMOVE_BUTTON_ID) { // remove button
+				RemoveButtonPressed();
+			}
+			else if (LOWORD(wParam) == MOVE_BUTTON_ID) { // move button
+				MoveButtonPressed();
+			} 
 			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
