@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
+#include <time.h>
 
 #define try bool __HadError=false;
 #define catch(x) ExitJmp:if(__HadError)
@@ -14,28 +16,172 @@
 HWND windowElements[1024];
 
 int NUM_ITEMS = 1;
+BOOL loaded = FALSE;
+
+char* days[] = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+char* months[] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
 
 void eraseTextBox(){
 	SetWindowText(windowElements[3], "");
 }
 
+void goCrazy(){
+
+}
+
+
+void save(){
+
+  char text[1024];
+	
+  GetWindowText(windowElements[0], text, 1024);
+	
+  FILE *f;  
+
+	f = fopen("homeworkList.txt", "w+");
+	
+  fputs(text, f);
+	
+  fclose(f);
+  printf("Saved to file.\n", text);
+}
+
+
+void load(){
+  TCHAR text[1024*1024] = TEXT("");
+	FILE *f;
+
+	f = fopen("homeworkList.txt", "r+");
+	fgets(text, 1024*1024, (FILE*)f);
+	
+
+  if (SetWindowText(windowElements[0], text) == TRUE){
+    printf("Loaded from file. [%s]\n", text);
+  }
+  else{
+    printf("Failed to insert text\n");
+  }
+
+  fclose(f);
+  
+  
+
+}
+
+char* getThisMonth(char* thisMonth){
+	
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+
+	return months[tm.tm_mon];
+}
+
+int CheckInput(TCHAR typed[], char parts[4][1024]){
+	
+	char* pch = NULL;
+  pch = strtok(typed, " ");
+	char intCounter[10] = "";
+
+	int partPlace = 0;
+
+    while (pch != NULL)
+    {
+
+		// if we already found a day of the week increment
+		if (partPlace > 0){
+			partPlace += 1;
+		}
+
+		if (partPlace > 3){
+			break;
+		}
+
+		// check if this word is a day of the week
+		if (partPlace == 0){
+			// for ( ; *pch; ++pch) *pch = tolower(*pch); // make it lower case
+			for (int i = 0; i < 7; i++){
+				if (strcmp(pch, days[i]) == 0){
+					partPlace += 1;
+					break;
+				}
+			}
+		}
+
+		// check months
+		if (partPlace == 3){
+			for (int i = 0; i < 13; i++){
+				if (strcmp(pch, months[i]) == 0){
+					break;
+				}
+				if (i == 11){
+					printf("Thats not a real month");
+					return FALSE;
+				}
+			}
+		}
+		
+		strcat(parts[partPlace], pch);
+		if (partPlace == 0){
+			strcat(parts[partPlace], " ");
+		}
+
+        pch = strtok(NULL, " ");	
+    }
+		
+	if (partPlace < 2){
+		printf("Add format incorrect\n");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 int AddButtonPressed(){
 	printf("add button pressed\n");	
 	
-	TCHAR text[1024] = TEXT("");
+	TCHAR text[1024*1024] = TEXT("");
 	TCHAR typed[1024] = TEXT("");
 	GetWindowText(windowElements[0], text, 1024*1024);
 	GetWindowText(windowElements[3], typed, 1024*1024);
-	
+
+	if (strcmp(typed, "") == 0 || strcmp(typed, " ") == 0){
+		return FALSE;
+	}
+
+	if (strcmp(typed, "geeb") == 0){
+		goCrazy();
+		return FALSE;
+	}
+
+	char parts[4][1024] = {"", "", "", ""};
+	if (!CheckInput(typed, parts)){
+		return FALSE;
+	}
+
 	char numItems[10] = "";
 	sprintf(numItems, "%d", NUM_ITEMS);
 
-	strcat(text, "\n");
+	
 	strcat(text, numItems);
 	strcat(text, ". ");
-	strcat(text, typed);
+	strcat(text, parts[0]);
+	strcat(text, parts[1]);
+	strcat(text, ", ");
+	char thisMonth[100];
+	if (strcmp(parts[3], "") == 0){
+		strcat(text, getThisMonth(thisMonth));
+	}
+	else{
+		strcat(text, parts[3]);
+	}
+	strcat(text, " ");
+	strcat(text, parts[2]);
+  strcat(text, "\n");
+	
+	
 	
 	if (SetWindowText(windowElements[0], text) == TRUE){
+		save();
 		NUM_ITEMS++;
 		eraseTextBox();
 		return TRUE;
@@ -62,15 +208,9 @@ int RemoveButtonPressed(){
 	}
 	catch(){
 		printf("Tried to remove without a number\n");
-		eraseTextBox();
 		return FALSE;
 	}
 
-	if (intTyped >= NUM_ITEMS || intTyped < 0){
-		printf("Tried to remove with an invalid number\n");
-		eraseTextBox();
-		return FALSE;
-	}
 
 	char* pch = NULL;
     pch = strtok(text, "\n");
@@ -83,23 +223,24 @@ int RemoveButtonPressed(){
 			intTyped = -1;
 			counter--;
 			pch = strtok(NULL, "\n");	
+			NUM_ITEMS--;
+			eraseTextBox();
 			continue;
 		}
 		
 		sprintf(intCounter, "%d", counter);
 		memmove(pch, pch+3, strlen(pch));
 
-		strcat(newText, "\n");
 		strcat(newText, intCounter);
 		strcat(newText, ". ");
 		strcat(newText, pch);
+    strcat(newText, "\n");
 		
         pch = strtok(NULL, "\n");	
     }
 
 	if (SetWindowText(windowElements[0], newText) == TRUE){
-		NUM_ITEMS--;
-		eraseTextBox();
+		save();
 		return TRUE;
 	}
 
@@ -119,11 +260,13 @@ int MoveButtonPressed(){
 	TCHAR saveText2[1024] = TEXT("");
 
 	TCHAR text[1024] = TEXT("");
+	TCHAR textCopy[1024] = TEXT("");
 	TCHAR typed[1024] = TEXT("");
 	TCHAR newText[1024] = TEXT("");
 	GetWindowText(windowElements[0], text, 1024*1024);
 	GetWindowText(windowElements[3], typed, 1024*1024);
 	
+	strcpy(textCopy, text);
 	
 	char* pch = NULL;
     pch = strtok(typed, " ");
@@ -136,15 +279,11 @@ int MoveButtonPressed(){
 	}
 	catch(){
 		printf("User typed something wrong");
-		eraseTextBox();
 		return false;
 	}
 
-	printf("HERE %d %d\n", intTyped, intTyped2);
-
-	if (intTyped >= NUM_ITEMS || intTyped < 0 || intTyped2 >= NUM_ITEMS || intTyped2 < 0){
+	if (intTyped >= NUM_ITEMS || intTyped <= 0 || intTyped2 >= NUM_ITEMS || intTyped2 <= 0 || intTyped == intTyped2){
 		printf("Tried to move with an invalid number\n");
-		eraseTextBox();
 		return FALSE;
 	}
 
@@ -167,8 +306,8 @@ int MoveButtonPressed(){
 	}
 
 	counter = 0;
-	printf("[%s] [%s]\n", saveText, saveText2);
-	pch = strtok(text, "\n");
+
+	pch = strtok(textCopy, "\n");
 	
     while (pch != NULL)
     {
@@ -177,32 +316,35 @@ int MoveButtonPressed(){
 		sprintf(intCounter, "%d", counter);
 		if (counter == intTyped){
 			intTyped = -1;
-			strcat(newText, "\n");
-			strcat(newText, intCounter);
-			strcat(newText, ". ");
-			strcat(newText, saveText);
-		}
-		else if (counter == intTyped2){
-			intTyped2 = -1;
-			strcat(newText, "\n");
+			
 			strcat(newText, intCounter);
 			strcat(newText, ". ");
 			strcat(newText, saveText2);
+      strcat(newText, "\n");
+		}
+		else if (counter == intTyped2){
+			intTyped2 = -1;
+			
+			strcat(newText, intCounter);
+			strcat(newText, ". ");
+			strcat(newText, saveText);
+      strcat(newText, "\n");
 		}
 		else{
 			memmove(pch, pch+3, strlen(pch));
 
-			strcat(newText, "\n");
+			
 			strcat(newText, intCounter);
 			strcat(newText, ". ");
 			strcat(newText, pch);
+      strcat(newText, "\n");
 		}
 		
-        pch = strtok(NULL, "\n");	
+        pch = strtok(NULL, "\n");
     }
-	printf("%s\n", newText);
 
 	if (SetWindowText(windowElements[0], newText) == TRUE){
+		save();
 		eraseTextBox();
 		return TRUE;
 	}
@@ -318,7 +460,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 	int height = HEIGHT;
 	RECT rc;
 	int counter = 0;
-    switch(Msg) 
+
+  switch(Msg) 
 	{
 		case WM_SIZE:
 			GetWindowRect(hwnd, &MainRect);
@@ -326,7 +469,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			height = MainRect.bottom - MainRect.top;
 
 			// homework list
-			SetWindowPos(windowElements[counter++], hwnd, 20, 60, width - 40, height-260, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(windowElements[counter++], hwnd, 20, 80, width - 40, height-260, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// help message
 			SetWindowPos(windowElements[counter++], hwnd, 20, height-175, width - 60, 40, SWP_SHOWWINDOW | SWP_NOZORDER | SWP_FRAMECHANGED);
 			// title
@@ -348,6 +491,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 				hwnd, (HMENU) 1, NULL, NULL
 			);
 			windowElements[numChildren++] = hwndHomeworkList;
+      
+        if (!loaded){
+          load();
+          loaded = TRUE;
+        }
 
 			hwndHelpMessage = CreateWindow( // help message
 				"STATIC", TEXT("Name  Weekday  Day_number  Month(blank if n/a)"),WS_CHILD, 
@@ -395,13 +543,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			// create a font for the title and text box
 			LOGFONT logfont; 
 			ZeroMemory(&logfont, sizeof(LOGFONT));
-			logfont.lfHeight = -35; 
+			logfont.lfHeight = -35;
+      logfont.lfWeight = 700;
 			HFONT hFont = CreateFontIndirect(&logfont);
 			ZeroMemory(&logfont, sizeof(LOGFONT));
 			logfont.lfHeight = -17; 
 			HFONT hFont2 = CreateFontIndirect(&logfont);
 			ZeroMemory(&logfont, sizeof(LOGFONT));
-			logfont.lfHeight = -30;
+			logfont.lfHeight = -23;
 			HFONT hFont3 = CreateFontIndirect(&logfont);
 
 			
@@ -447,6 +596,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			} 
 			break;
 		case WM_DESTROY:
+      save();
 			PostQuitMessage(0);
 			break;
 		default:
