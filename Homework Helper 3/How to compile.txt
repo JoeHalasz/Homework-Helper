@@ -1,1 +1,1 @@
-gcc Homework_Helper.c -lgdi32
+gcc Homework_Helper.c -lgdi32 -o "Homework Helper" -mwindows
