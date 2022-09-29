@@ -11,22 +11,21 @@
 #define catch(x) ExitJmp:if(__HadError)
 #define throw(x) {__HadError=true;goto ExitJmp;}
 
-
+HWND hwnd;
 
 HWND windowElements[1024];
 
 int NUM_ITEMS = 1;
 BOOL loaded = FALSE;
+HBRUSH bkbrush = NULL;
 
 char* days[] = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
 char* months[] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
 
+int BACKGROUND_COLOR[3];
+
 void eraseTextBox(){
 	SetWindowText(windowElements[3], "");
-}
-
-void goCrazy(){
-
 }
 
 
@@ -148,10 +147,6 @@ int AddButtonPressed(){
 		return FALSE;
 	}
 
-	if (strcmp(typed, "geeb") == 0){
-		goCrazy();
-		return FALSE;
-	}
 
 	char parts[4][1024] = {"", "", "", ""};
 	if (!CheckInput(typed, parts)){
@@ -358,7 +353,7 @@ int MoveButtonPressed(){
 
 
 
-HWND hwnd;
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 
@@ -373,6 +368,11 @@ RECT editSize = {0,0,0,0};
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+
+  BACKGROUND_COLOR[0] = 60;
+  BACKGROUND_COLOR[1] = 60;
+  BACKGROUND_COLOR[2] = 60;
+
 	editSize.left = 1920 - WIDTH - 25;
 	editSize.top = 25;
 	editSize.right = editSize.left + WIDTH;
@@ -492,10 +492,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			);
 			windowElements[numChildren++] = hwndHomeworkList;
       
-        if (!loaded){
-          load();
-          loaded = TRUE;
-        }
+      if (!loaded){
+        load();
+        loaded = TRUE;
+      }
 
 			hwndHelpMessage = CreateWindow( // help message
 				"STATIC", TEXT("Name  Weekday  Day_number  Month(blank if n/a)"),WS_CHILD, 
@@ -575,12 +575,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			SetBkColor((HDC)wParam, RGB(60, 60, 60));
 			SetTextColor((HDC)wParam, RGB(255,255,255));
 			return (LRESULT)CreateSolidBrush(RGB(60, 60, 60));
+    case WM_CTLCOLORDLG: // set background color
+			SetBkColor((HDC)wParam, RGB(255, 255, 255));
+			return (LRESULT)CreateSolidBrush(RGB(255, 255, 255));
 		case WM_ERASEBKGND:{
 			HDC hdc = (HDC)(wParam); 
 			RECT rc;
 			GetClientRect(hwnd, &rc); 
-			HBRUSH brush = CreateSolidBrush(RGB(60, 60, 60));// grey
-			FillRect(hdc, &rc, brush); 
+			HBRUSH brush = CreateSolidBrush(RGB(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2]));// grey
+			FillRect(hdc, &rc, brush);
 			DeleteObject(brush); 
 		}
 		case WM_COMMAND:
