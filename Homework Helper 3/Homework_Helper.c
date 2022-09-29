@@ -20,7 +20,10 @@ BOOL loaded = FALSE;
 HBRUSH bkbrush = NULL;
 
 char* days[] = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+char* daysCaps[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
 char* months[] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
+char* monthsCaps[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 int BACKGROUND_COLOR[3];
 
@@ -99,7 +102,7 @@ int CheckInput(TCHAR typed[], char parts[4][1024]){
 		if (partPlace == 0){
 			// for ( ; *pch; ++pch) *pch = tolower(*pch); // make it lower case
 			for (int i = 0; i < 7; i++){
-				if (strcmp(pch, days[i]) == 0){
+				if (strcmp(pch, days[i]) == 0 || strcmp(pch, daysCaps[i]) == 0){
 					partPlace += 1;
 					break;
 				}
@@ -109,7 +112,7 @@ int CheckInput(TCHAR typed[], char parts[4][1024]){
 		// check months
 		if (partPlace == 3){
 			for (int i = 0; i < 13; i++){
-				if (strcmp(pch, months[i]) == 0){
+				if (strcmp(pch, months[i]) == 0 || strcmp(pch, monthsCaps[i]) == 0){
 					break;
 				}
 				if (i == 11){
