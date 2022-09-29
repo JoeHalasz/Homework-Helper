@@ -51,12 +51,21 @@ void save(){
 
 void load(){
   TCHAR text[1024*1024] = TEXT("");
-	FILE *f;
+  char c ;
+  FILE *f;
 
-	f = fopen("homeworkList.txt", "r+");
-	fgets(text, 1024*1024, (FILE*)f);
+  f = fopen("homeworkList.txt", "r+");
+  c = fgetc(f);
+  while (c != EOF){
+    if (c == '\n'){
+      NUM_ITEMS++;
+    }
+    strncat(text, &c, 1);
+    c = fgetc(f);
+  } 
+
+  fgets(text, 1024*1024, (FILE*)f);
 	
-
   if (SetWindowText(windowElements[0], text) == TRUE){
     printf("Loaded from file. [%s]\n", text);
   }
@@ -81,7 +90,7 @@ char* getThisMonth(char* thisMonth){
 int CheckInput(TCHAR typed[], char parts[4][1024]){
 	
 	char* pch = NULL;
-  pch = strtok(typed, " ");
+  	pch = strtok(typed, " ");
 	char intCounter[10] = "";
 
 	int partPlace = 0;
