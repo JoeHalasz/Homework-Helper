@@ -84,7 +84,7 @@ char* getThisMonth(char* thisMonth){
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
 
-	return months[tm.tm_mon];
+	return monthsCaps[tm.tm_mon];
 }
 
 int CheckInput(TCHAR typed[], char parts[4][1024]){
@@ -120,7 +120,8 @@ int CheckInput(TCHAR typed[], char parts[4][1024]){
 
 		// check months
 		if (partPlace == 3){
-			for (int i = 0; i < 13; i++){
+			int i;
+			for (i = 0; i < 13; i++){
 				if (strcmp(pch, months[i]) == 0 || strcmp(pch, monthsCaps[i]) == 0){
 					break;
 				}
@@ -129,12 +130,16 @@ int CheckInput(TCHAR typed[], char parts[4][1024]){
 					return FALSE;
 				}
 			}
+			strcat(parts[partPlace], monthsCaps[i]);			
+		}
+		else{
+			strcat(parts[partPlace], pch);
+			if (partPlace == 0){
+				strcat(parts[partPlace], " ");
+			}
 		}
 		
-		strcat(parts[partPlace], pch);
-		if (partPlace == 0){
-			strcat(parts[partPlace], " ");
-		}
+		
 
         pch = strtok(NULL, " ");	
     }
@@ -183,7 +188,7 @@ int AddButtonPressed(){
 	}
 	strcat(text, " ");
 	strcat(text, parts[2]);
-  strcat(text, "\n");
+  	strcat(text, "\n");
 	
 	
 	
@@ -195,6 +200,42 @@ int AddButtonPressed(){
 	}
 
 	return FALSE;
+}
+
+void RemoveNumberFromFront(char* str, int strlen){
+	char c = ' ';
+	BOOL foundSpace = FALSE;
+	BOOL removed = FALSE;
+	int i, j;
+	j = 0;
+	int lastNotSpace = 0;
+	BOOL lastWasSpace = FALSE;
+
+	for (i = 0; i < strlen; i++){
+		c = str[i];
+		if (foundSpace && c != ' '){
+			removed = TRUE;
+		}
+		if (c == ' ' && c != '\0'){
+			foundSpace = TRUE;
+			if (!lastWasSpace){
+				lastWasSpace = TRUE;
+				lastNotSpace = i-1;
+			}
+		}
+		else{
+			lastWasSpace = false;
+			lastNotSpace = -1;
+		}
+		if (removed){
+			str[j++] = c;
+			str[i] = ' ';
+		}
+	}
+
+	if (lastNotSpace != -1){
+		str[lastNotSpace+1] = '\0';
+	}
 }
 
 int RemoveButtonPressed(){
@@ -220,7 +261,10 @@ int RemoveButtonPressed(){
 
 
 	char* pch = NULL;
+	char helper[1024];
     pch = strtok(text, "\n");
+	
+	
 	char intCounter[10] = "";
 
     while (pch != NULL)
@@ -234,14 +278,16 @@ int RemoveButtonPressed(){
 			eraseTextBox();
 			continue;
 		}
+		strcpy(helper, pch);
+		helper[strlen(pch)] = '\0';
 		
 		sprintf(intCounter, "%d", counter);
-		memmove(pch, pch+3, strlen(pch));
+		RemoveNumberFromFront(helper, strlen(pch));
 
 		strcat(newText, intCounter);
 		strcat(newText, ". ");
-		strcat(newText, pch);
-    strcat(newText, "\n");
+		strcat(newText, helper);
+    	strcat(newText, "\n");
 		
         pch = strtok(NULL, "\n");	
     }
@@ -264,7 +310,6 @@ int MoveButtonPressed(){
 	int intTyped2;
 
 	TCHAR saveText[1024] = TEXT("");
-	TCHAR saveText2[1024] = TEXT("");
 
 	TCHAR text[1024] = TEXT("");
 	TCHAR textCopy[1024] = TEXT("");
@@ -295,17 +340,18 @@ int MoveButtonPressed(){
 	}
 
 	pch = strtok(text, "\n");
+	char* helper = calloc(1024, sizeof(char));
+
 	while (pch != NULL)
     {
 		counter++;
 		
+		strcpy(helper, pch);
+		helper[strlen(pch)] = '\0';
+
 		if (counter == intTyped){
-			memmove(pch, pch+3, strlen(pch));
-			strcpy(saveText, pch);
-		}
-		if (counter == intTyped2){
-			memmove(pch, pch+3, strlen(pch));
-			strcpy(saveText2, pch);
+			RemoveNumberFromFront(helper, strlen(pch));
+			strcpy(saveText, helper);
 		}
 		pch = strtok(NULL, "\n");
 
@@ -315,41 +361,83 @@ int MoveButtonPressed(){
 	counter = 0;
 
 	pch = strtok(textCopy, "\n");
+
+	BOOL wasHere = FALSE;
 	
     while (pch != NULL)
     {
-		// todo fix this idk whats wrong
 		counter++;
 		sprintf(intCounter, "%d", counter);
-		if (counter == intTyped){
-			intTyped = -1;
-			
-			strcat(newText, intCounter);
-			strcat(newText, ". ");
-			strcat(newText, saveText2);
-      strcat(newText, "\n");
-		}
-		else if (counter == intTyped2){
-			intTyped2 = -1;
-			
-			strcat(newText, intCounter);
-			strcat(newText, ". ");
-			strcat(newText, saveText);
-      strcat(newText, "\n");
-		}
-		else{
-			memmove(pch, pch+3, strlen(pch));
 
-			
-			strcat(newText, intCounter);
-			strcat(newText, ". ");
-			strcat(newText, pch);
-      strcat(newText, "\n");
+		if (intTyped < intTyped2){ // user wants to move it down
+			if (counter == intTyped){
+				intTyped = -2;
+				counter--;
+				pch = strtok(NULL, "\n");
+			}
+			else if (counter == intTyped2){
+				intTyped2 = -2;
+				
+				strcat(newText, intCounter);
+				strcat(newText, ". ");
+				strcat(newText, saveText);
+				strcat(newText, "\n");
+				wasHere = TRUE;
+			}
+			else{
+				strcpy(helper, pch);
+				helper[strlen(pch)] = '\0';
+				RemoveNumberFromFront(helper, strlen(pch));
+				
+				strcat(newText, intCounter);
+				strcat(newText, ". ");
+				strcat(newText, helper);
+				strcat(newText, "\n");
+				
+				pch = strtok(NULL, "\n");
+			}
 		}
-		
-        pch = strtok(NULL, "\n");
+		else{ // user wants to move it up
+			wasHere = TRUE;
+			if (counter == intTyped+1){
+				intTyped = -2;
+				counter--;
+				pch = strtok(NULL, "\n");
+			}
+			else if (counter == intTyped2){
+				intTyped2 = -2;
+				
+				strcat(newText, intCounter);
+				strcat(newText, ". ");
+				strcat(newText, saveText);
+				strcat(newText, "\n");
+			}
+			else{
+				strcpy(helper, pch);
+				helper[strlen(pch)] = '\0';
+				RemoveNumberFromFront(helper, strlen(pch));
+				
+				strcat(newText, intCounter);
+				strcat(newText, ". ");
+				strcat(newText, helper);
+				strcat(newText, "\n");
+				
+				pch = strtok(NULL, "\n");
+			}
+		}		
     }
+	if (!wasHere){
+		counter++;
+		sprintf(intCounter, "%d", counter);
 
+		strcat(newText, intCounter);
+		strcat(newText, ". ");
+		strcat(newText, saveText);
+		strcat(newText, "\n");
+	}
+
+	free(helper);
+	
 	if (SetWindowText(windowElements[0], newText) == TRUE){
 		save();
 		eraseTextBox();
@@ -390,40 +478,40 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	editSize.right = editSize.left + WIDTH;
 	editSize.bottom = editSize.top + HEIGHT;
 
-  	MSG         Msg;
-    WNDCLASSEX  WndClsEx = {0};
+  MSG         Msg;
+  WNDCLASSEX  WndClsEx = {0};
 
-    WndClsEx.cbSize        = sizeof (WNDCLASSEX);
-    WndClsEx.style         = CS_HREDRAW | CS_VREDRAW;
-    WndClsEx.lpfnWndProc   = WndProc;
-    WndClsEx.hInstance     = hInstance;
-    WndClsEx.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-    WndClsEx.lpszClassName = "ClassName";
-    WndClsEx.hIconSm       = LoadIcon(hInstance, IDI_APPLICATION);
+  WndClsEx.cbSize        = sizeof (WNDCLASSEX);
+  WndClsEx.style         = CS_HREDRAW | CS_VREDRAW;
+  WndClsEx.lpfnWndProc   = WndProc;
+  WndClsEx.hInstance     = hInstance;
+  WndClsEx.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+  WndClsEx.lpszClassName = "ClassName";
+  WndClsEx.hIconSm       = LoadIcon(hInstance, IDI_APPLICATION);
 
-    RegisterClassEx(&WndClsEx);
+  RegisterClassEx(&WndClsEx);
 
-    hwnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW,
-                          "ClassName",
-                          "Homework Helper",
-                          WS_OVERLAPPEDWINDOW,
-                          1920 - WIDTH - 25,
-                          25,
-                          WIDTH,
-                          HEIGHT,
-                          NULL,
-                          NULL,
-                          hInstance,
-                          NULL);
+  hwnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW,
+                        "ClassName",
+                        "Homework Helper",
+                        WS_OVERLAPPEDWINDOW,
+                        1920 - WIDTH - 25,
+                        25,
+                        WIDTH,
+                        HEIGHT,
+                        NULL,
+                        NULL,
+                        hInstance,
+                        NULL);
 
-    ShowWindow(hwnd, nShowCmd);
-    UpdateWindow(hwnd);
+  ShowWindow(hwnd, nShowCmd);
+  UpdateWindow(hwnd);
 
-    while(GetMessage(&Msg, NULL, 0, 0))
-    {
-        TranslateMessage(&Msg);
-        DispatchMessage(&Msg);
-    }
+  while(GetMessage(&Msg, NULL, 0, 0))
+  {
+      TranslateMessage(&Msg);
+      DispatchMessage(&Msg);
+  }
 	return 0;
 }
 
@@ -504,10 +592,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			);
 			windowElements[numChildren++] = hwndHomeworkList;
       
-      if (!loaded){
-        load();
-        loaded = TRUE;
-      }
+			if (!loaded){
+				load();
+				loaded = TRUE;
+			}
 
 			hwndHelpMessage = CreateWindow( // help message
 				"STATIC", TEXT("Name  Weekday  Day_number  Month(blank if n/a)"),WS_CHILD, 
@@ -529,6 +617,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 				hwnd, (HMENU) 1,NULL, NULL
 			);
 			windowElements[numChildren++] = hwndTextBox;
+
+      SetForegroundWindow(windowElements[3]);
 
 			hwndButtonAdd = CreateWindow( // add button
 				"button", "Add",WS_CHILD, 
@@ -556,7 +646,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			LOGFONT logfont; 
 			ZeroMemory(&logfont, sizeof(LOGFONT));
 			logfont.lfHeight = -35;
-      logfont.lfWeight = 700;
+      		logfont.lfWeight = 700;
 			HFONT hFont = CreateFontIndirect(&logfont);
 			ZeroMemory(&logfont, sizeof(LOGFONT));
 			logfont.lfHeight = -17; 
@@ -599,16 +689,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			DeleteObject(brush); 
 		}
 		case WM_COMMAND:
+      printf("here\n");
 			// TODO responds to button click
 			if (LOWORD(wParam) == ADD_BUTTON_ID) { // add button
 				AddButtonPressed();
+        SetFocus(windowElements[3]);
 			}
 			else if (LOWORD(wParam) == REMOVE_BUTTON_ID) { // remove button
 				RemoveButtonPressed();
+        SetFocus(windowElements[3]);
 			}
 			else if (LOWORD(wParam) == MOVE_BUTTON_ID) { // move button
 				MoveButtonPressed();
-			} 
+        SetFocus(windowElements[3]);
+			}
+      
+      
 			break;
 		case WM_DESTROY:
       save();
@@ -616,8 +712,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			break;
 		default:
 			return DefWindowProc(hwnd, Msg, wParam, lParam);
-    }
-    return 0;
+  }
+  return 0;
 }
 
 
