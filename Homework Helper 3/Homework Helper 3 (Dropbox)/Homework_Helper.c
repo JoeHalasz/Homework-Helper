@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
+#include <unistd.h>
+
 
 #define try bool __HadError=false;
 #define catch(x) ExitJmp:if(__HadError)
@@ -73,7 +75,7 @@ int loadFromCloud(){
   GetCurrentDirectory(MAX_PATH, currentPath);
   printf("Current Directory is [%s]\n", currentPath);
   WinExec("rclone copy HomeworkHelper:HomeworkHelper/homeworkList.txt ./", SW_HIDE);
-  
+  sleep(3);
   free(path);
 
   return 0;
