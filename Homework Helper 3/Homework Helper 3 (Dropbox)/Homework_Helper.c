@@ -22,6 +22,8 @@ int NUM_ITEMS = 1;
 BOOL loaded = FALSE;
 HBRUSH bkbrush = NULL;
 
+BOOL ONLINE = FALSE;
+
 char* days[] = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
 char* daysCaps[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
@@ -38,9 +40,11 @@ void eraseTextBox(){
 char* getPath(){
   char* path = calloc(MAX_PATH, sizeof(char));
   HRESULT result = SHGetFolderPath(NULL, 0, NULL, 0, path);
+  
   int i = 0;
   char c = path[i];
   int lastFound = -1;
+  
   for (;c != '\0';i++){
     if (c == '\\'){
       lastFound = i;
@@ -49,33 +53,39 @@ char* getPath(){
   }
 
   path[lastFound] = '\0';
-  printf("[%s]\n", path);
+
   strcat(path, "Documents/Homework-Helper/Homework Helper 3/Homework Helper 3 (Dropbox)/rclone");
+  
   return path;
 }
 
 
 int saveToCloud(){
-  char* path = getPath();
-  printf("[%s]\n", path);
-  SetCurrentDirectory(path);
-  WinExec("rclone copy HomeworkList.txt HomeworkHelper:HomeworkHelper/", SW_HIDE);
-  
-  free(path);
+  if (ONLINE){
+
+    char* path = getPath();
+
+    SetCurrentDirectory(path);
+    WinExec("rclone copy HomeworkList.txt HomeworkHelper:HomeworkHelper/", SW_HIDE);
+    
+    free(path);
+
+  }
 
   return 0;
 }
 
 
 int loadFromCloud(){
-  char* path = getPath();
-  char* currentPath = calloc(MAX_PATH, sizeof(char));
-  printf("[%s]\n", path);
-  SetCurrentDirectory(path);
-  GetCurrentDirectory(MAX_PATH, currentPath);
-  printf("Current Directory is [%s]\n", currentPath);
-  system("rclone copy HomeworkHelper:HomeworkHelper/homeworkList.txt ./");
-  free(path);
+  if (ONLINE){
+    
+    char* path = getPath();
+
+    SetCurrentDirectory(path);
+    system("rclone copy HomeworkHelper:HomeworkHelper/homeworkList.txt ./");
+    
+    free(path);
+  }
 
   return 0;
 }
@@ -223,7 +233,8 @@ int AddButtonPressed(){
 	}
 
 	char numItems[10] = "";
-	
+	sprintf(numItems, "%d", NUM_ITEMS);
+  
 	strcat(text, numItems);
 	strcat(text, ". ");
 	strcat(text, parts[0]);
@@ -238,9 +249,7 @@ int AddButtonPressed(){
 	}
 	strcat(text, " ");
 	strcat(text, parts[2]);
-  	strcat(text, "\n");
-	
-	
+  strcat(text, "\n");
 	
 	if (SetWindowText(windowElements[0], text) == TRUE){
 		save();
@@ -371,7 +380,7 @@ int MoveButtonPressed(){
 	strcpy(textCopy, text);
 	
 	char* pch = NULL;
-    pch = strtok(typed, " ");
+  pch = strtok(typed, " ");
 	char intCounter[10] = "";
 
 	try{
