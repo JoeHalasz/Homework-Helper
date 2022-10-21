@@ -74,8 +74,7 @@ int loadFromCloud(){
   SetCurrentDirectory(path);
   GetCurrentDirectory(MAX_PATH, currentPath);
   printf("Current Directory is [%s]\n", currentPath);
-  WinExec("rclone copy HomeworkHelper:HomeworkHelper/homeworkList.txt ./", SW_HIDE);
-  sleep(3);
+  system("rclone copy HomeworkHelper:HomeworkHelper/homeworkList.txt ./");
   free(path);
 
   return 0;
