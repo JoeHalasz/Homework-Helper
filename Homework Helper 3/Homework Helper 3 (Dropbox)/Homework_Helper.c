@@ -57,7 +57,7 @@ int saveToCloud(){
   char* path = getPath();
   printf("[%s]\n", path);
   SetCurrentDirectory(path);
-  system("rclone copy HomeworkList.txt HomeworkHelper:HomeworkHelper/");
+  WinExec("rclone copy HomeworkList.txt HomeworkHelper:HomeworkHelper/", SW_HIDE);
   
   free(path);
 
@@ -72,7 +72,7 @@ int loadFromCloud(){
   SetCurrentDirectory(path);
   GetCurrentDirectory(MAX_PATH, currentPath);
   printf("Current Directory is [%s]\n", currentPath);
-  system("rclone copy HomeworkHelper:HomeworkHelper/homeworkList.txt ./");
+  WinExec("rclone copy HomeworkHelper:HomeworkHelper/homeworkList.txt ./", SW_HIDE);
   
   free(path);
 
