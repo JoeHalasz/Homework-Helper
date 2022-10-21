@@ -654,10 +654,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			ZeroMemory(&logfont, sizeof(LOGFONT));
 			logfont.lfHeight = -23;
 			HFONT hFont3 = CreateFontIndirect(&logfont);
-
 			
 			// set fonts
-			SendMessage(hwndTextBox, WM_SETFONT, (WPARAM)hFont3, TRUE);			
+			SendMessage(hwndTextBox, WM_SETFONT, (WPARAM)hFont3, TRUE);
 			SendMessage(hwndTitle, WM_SETFONT, (WPARAM)hFont, TRUE);
 			SendMessage(hwndHelpMessage, WM_SETFONT, (WPARAM)hFont2, TRUE);
 			SendMessage(hwndButtonAdd, WM_SETFONT, (WPARAM)hFont2, TRUE);
@@ -689,25 +688,25 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 			DeleteObject(brush); 
 		}
 		case WM_COMMAND:
-      printf("here\n");
+      		printf("here\n");
 			// TODO responds to button click
 			if (LOWORD(wParam) == ADD_BUTTON_ID) { // add button
 				AddButtonPressed();
-        SetFocus(windowElements[3]);
+        		SetFocus(windowElements[3]);
 			}
 			else if (LOWORD(wParam) == REMOVE_BUTTON_ID) { // remove button
 				RemoveButtonPressed();
-        SetFocus(windowElements[3]);
+        		SetFocus(windowElements[3]);
 			}
 			else if (LOWORD(wParam) == MOVE_BUTTON_ID) { // move button
 				MoveButtonPressed();
-        SetFocus(windowElements[3]);
+        		SetFocus(windowElements[3]);
 			}
       
       
 			break;
 		case WM_DESTROY:
-      save();
+      		save();
 			PostQuitMessage(0);
 			break;
 		default:

@@ -1,0 +1,1454 @@
+commit 01dbbff62e2470603d0c3abf4adf5c96e60cdbb5
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 21 15:06:08 2022 +0100
+
+    Version v1.60.0
+
+commit afa61e702c3768c5cbbb72a26a9415b8ee61fc90
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 21 12:39:29 2022 +0100
+
+    docs: remove hosted by tag as server has moved
+
+commit 546dc82793086a56324e38b584ad3f8bfac99bfe
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 21 12:39:45 2022 +0100
+
+    Add Robert Newson to contributors
+
+commit d9c4d95ab3c98840da8534e51b5bf5a639d40bd0
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 21 12:39:45 2022 +0100
+
+    Add Tom Mombourquette to contributors
+
+commit 0fb1b75a02100d8fb27d23f13d97d35ccd5778fa
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 21 12:39:45 2022 +0100
+
+    Add Manoj Ghosh to contributors
+
+commit 38f1f5b177e95ba92854bbfdd31de945255e0963
+Author: Tom Mombourquette <tom@devnode.com>
+Date:   Wed Oct 19 22:40:20 2022 -0300
+
+    rc: Fix mount/listmounts not returning the full Fs entered in mount/mount
+
+commit 0d2a62a927558e2a6e38db011093936d249c7d12
+Author: Ole Frost <82263101+olefrost@users.noreply.github.com>
+Date:   Fri Oct 21 11:45:24 2022 +0200
+
+    docs: Describe connection strings in alias backend
+
+commit b75c20720870882b3492e42b297a15c0f1501939
+Author: Manoj Ghosh <manoj.ghosh@oracle.com>
+Date:   Thu Oct 20 12:24:19 2022 -0700
+
+    oracle-object-storage: overview, docs update
+
+commit dff223f195bbd0ed4fbaec30b761b963550f2c57
+Author: Ole Frost <82263101+olefrost@users.noreply.github.com>
+Date:   Fri Oct 21 09:54:16 2022 +0200
+
+    install.sh: fix arm-v7 download
+
+commit d2fef05fe45074c458ae11d6b3361a2bd26c9c10
+Author: Robert Newson <rnewson@apache.org>
+Date:   Wed Oct 19 17:13:12 2022 +0100
+
+    httplib: Add --xxx-min-tls-version option to select minimum tls values for HTTP servers
+    
+    This allows administrators to disable TLS 1.0 and 1.1, for example.
+    
+    Example:
+    
+    rclone rcd --rc-min-tls-version=tls1.2 --rc-cert <cert> --rc-key <key>
+
+commit 188b9f8cf1dad3820351a61d2072f67011ff80c9
+Author: Tom Mombourquette <tom@devnode.com>
+Date:   Sun Oct 16 01:42:12 2022 -0300
+
+    rc: corrected mount/unmountall help msg and title
+
+commit daf3162bcf6f60056a5a7064fc16b74fc4f3a28a
+Author: Manoj Ghosh <manoj.ghosh@oracle.com>
+Date:   Sun Oct 16 23:19:23 2022 -0700
+
+    oracle-object-storage: minor docs update
+
+commit 5e59e7f442cb287146cea0c920e409b214093043
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 14 12:10:03 2022 +0100
+
+    ftp: Fix hang when using ExplicitTLS to certain servers.
+    
+    It was discovered that doing the tls Handshake immediately on
+    connection causes some FTP servers (proftpd and pureftpd) to hang.
+    
+    This imports a fix for it by temporarily hard forking jlaffaye/ftp to
+    include the fix submitted as a pull request.
+    
+    See: https://forum.rclone.org/t/rclone-ftps-explicit-rclone-touch-empty-files-proftpd-unable-to-build-data-connection-operation-not-permitted/22522
+    See: https://github.com/rclone/rclone/issues/6426#issuecomment-1243993039
+    See: https://github.com/jlaffaye/ftp/pull/283
+    See: https://github.com/jlaffaye/ftp/issues/282
+
+commit fce22c00656b8c62081d76c9854a95ee25ef827b
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Oct 12 08:55:58 2022 +0100
+
+    s3: add --s3-no-system-metadata to suppress read and write of system metadata
+    
+    See: https://forum.rclone.org/t/problems-with-content-disposition-and-backblaze-b2-using-s3/33292/
+
+commit bb3272e83782c2c8a6ee243a463f6ac2b86bbdba
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 14 11:11:56 2022 +0100
+
+    Add Bachue Zhou to contributors
+
+commit cb5b5635c7f528a976d3100740df8d282bf0233e
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 14 11:11:56 2022 +0100
+
+    Add Manoj Ghosh to contributors
+
+commit 66ed0ca7262e7e70909a9b4bf45b46594db23ccb
+Author: Bachue Zhou <bachue.shu@gmail.com>
+Date:   Thu Oct 13 22:49:22 2022 +0800
+
+    s3: add Qiniu KODO to s3 provider list - fixes #6195
+
+commit b16e50851ad209371df2d5455900124880464529
+Author: Manoj Ghosh <msays2000@gmail.com>
+Date:   Thu Oct 13 05:04:56 2022 -0700
+
+    Add a native backend for oracle object storage - fixes #6299
+
+commit 90d23139f626bcaa3a7519698773faac86cb9afb
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Oct 11 17:54:22 2022 +0100
+
+    s3: drop binary metadata with an ERROR message
+    
+    Before this change, rclone would attempt to upload metadata with
+    binary contents which fail to be uploaded by net/http.
+    
+    This checks the keys and values for validity as http header values
+    before uploading.
+    
+    See: https://forum.rclone.org/t/invalid-metadata-key-names-result-in-a-failure-to-transfer-xattr-results-in-failure-to-upload-net-http-invalid-header-field-value-for-x-amz-meta-samba-pai/33406/
+
+commit 5ea9398b63af17d1002950b268873cfa4a281476
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Oct 5 17:39:24 2022 +0100
+
+    swift: add --swift-no-large-objects to reduce HEAD requests
+    
+    Supplying the flag --swift-no-large-objects is a promise to the swift
+    backend that there are no dynamic or static large objects stored.
+    
+    Using that knowledge rclone can speed its operations up reducing the
+    number of HEAD requests.
+    
+    See: https://forum.rclone.org/t/handling-or-not-of-large-objects-in-swift/33389/
+    See: https://forum.rclone.org/t/swift-sync-checksum-calls-head-on-every-object-so-is-very-slow/30322
+
+commit 3f804224f424d859cefc9722fc2a52ac7483f3fb
+Author: Isaac Aymerich <isaac.aymerich@gmail.com>
+Date:   Wed Oct 12 13:07:48 2022 +0200
+
+    rc: validate Daemon option is not set when mounting a volume via RC - fixes #6469
+
+commit cf0bf159abbf8505fab84327c29fe2a24e361ae2
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sat Oct 8 11:27:17 2022 +0100
+
+    s3: try to keep the maximum precision in ModTime with --user-server-modtime
+    
+    Before this change if --user-server-modtime was in use the ModTime
+    could change for an object as we receive it accurate to the nearest ms
+    in listings, but only accurate to the nearest second in HEAD and GET
+    requests.
+    
+    Normally AWS returns the milliseconds as .000 in listings, but if
+    versions are in use it may not. Storj S3 also seems to return
+    milliseconds.
+    
+    This patch tries to keep the maximum precision in the last modified
+    time, so it doesn't update a last modified time with a truncated
+    version if the times were the same to the nearest second.
+    
+    See: https://forum.rclone.org/t/cache-fingerprint-miss-behavior-leading-to-false-positive-stalen-cache/33404/
+
+commit 6654b66114521abc0031bbb0e76df43bcba6f137
+Author: Lesmiscore <nao20010128@gmail.com>
+Date:   Mon Oct 10 12:18:54 2022 +0900
+
+    union: propagate SlowHash feature
+
+commit 9bf78d0373ba33a15f61c1bb2a3fc7c62639aec0
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Oct 5 10:56:01 2022 +0100
+
+    local: fix "Failed to read metadata: function not implemented" on old Linux kernels
+    
+    Before this change rclone used statx() to read the metadata for files
+    from the local filesystem when `-M` was in use.
+    
+    Unfortunately statx() was only introduced in kernel 4.11 which was
+    released in April 2017 so there are current systems (eg Centos 7)
+    still on kernel versions which don't support statx().
+    
+    This patch checks to see if statx() is available and if it isn't, it
+    falls back to using fstatat() which was introduced in Linux 2.6.16
+    which is guaranteed for all Go versions.
+    
+    See: https://forum.rclone.org/t/metadata-from-linux-local-s3-failed-to-copy-failed-to-read-metadata-from-source-object-function-not-implemented/33233/
+
+commit 0c1fb8b2b779faffdba90e95dc88d3f88f6256d2
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Oct 7 14:13:58 2022 +0100
+
+    Add YanceyChiew to contributors
+
+commit 966654e23a2ddd5e46fa3aaf2a031dd66fc4e0d8
+Author: YanceyChiew <35898533+YanceyChiew@users.noreply.github.com>
+Date:   Sat Oct 1 14:36:26 2022 +0800
+
+    dlna: run assets_generate to make new icons
+
+commit 13b65104eb56756d728ce57d0b361da87eb89947
+Author: YanceyChiew <35898533+YanceyChiew@users.noreply.github.com>
+Date:   Sat Oct 1 17:18:50 2022 +0800
+
+    dlna: add SSDP AnnounceInterval flag option
+    
+    The current default AnnounceInterval is too short, causing the
+    multicast domain to be flooded with NOTIFY announcements,
+    which may prevent other dlna devices from sleeping.
+    
+    This change allows users to set the announcement interval,
+    and it's default value also increased to 12 minutes.
+    
+    Even within the interval, rclone can still passively respond to
+    M-SEARCH requests from other devices.
+
+commit 4a35aff33c92dab5c3d35a663be64e6f92d51974
+Author: YanceyChiew <35898533+YanceyChiew@users.noreply.github.com>
+Date:   Sat Oct 1 15:26:02 2022 +0800
+
+    dlna: add verification of addresses
+    
+    Verify the http service listening address and the SSDP server
+    announcement address to prevent accidental listening of IPv6 addresses
+    that do not support dlna yet and may be globally accessible.
+    
+    Unlistened addresses on the interface will also be filtered out of the
+    SSDP announcement to avoid misleading other services in the multicast domain.
+
+commit 09b6d939f5ea1b15823c5c8d9157037944770921
+Author: YanceyChiew <35898533+YanceyChiew@users.noreply.github.com>
+Date:   Sat Oct 1 14:28:50 2022 +0800
+
+    dlna: add support for more external subtitle
+
+commit 4e79de106a24d7b7416a0d30a7605137f2a53b27
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Oct 4 17:10:00 2022 +0100
+
+    hubic: remove backend as service has now shutdown - fixes #6481
+
+commit b437d9461a00d9bb864ef27d6544c72d3d498077
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Oct 5 13:33:29 2022 +0100
+
+    Add Isaac Aymerich to contributors
+
+commit 910af597a12dca980ce5847eb2f1b392bcccc634
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Oct 5 13:33:29 2022 +0100
+
+    Add Lorenzo Milesi to contributors
+
+commit c10965ecfb2390a9511bb855cc30724958c0c848
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Oct 5 13:33:29 2022 +0100
+
+    Add Dimitri Papadopoulos Orfanos to contributors
+
+commit 5efb880772e818d24f4c176ea8819765074fbf22
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Tue Oct 4 15:40:37 2022 +0200
+
+    Remove LICENSE
+
+commit 6c3b7d5820fa7305d3fe94b252b98dcf45cb9ae5
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Tue Oct 4 15:38:58 2022 +0200
+
+    Create LICENSE
+
+commit c5109408c02db3ca14a9a5382373066299c39d25
+Author: Isaac Aymerich <isaac.aymerich@gmail.com>
+Date:   Mon Oct 3 12:24:58 2022 +0200
+
+    rc: handle external unmount when mounting
+    
+    Before this change, if the a mount was created via the rc but unmounted
+    externally with `fusermount -u` say, rclone would still believe the mount
+    was active when it wasn't.
+
+commit a3c06b9bbe148ac4995c26dac3a5ce1b603a176e
+Author: Marco Molteni <marco.molteni@mailbox.org>
+Date:   Sat Oct 1 11:28:56 2022 +0200
+
+    docs/content: remove duplicate Scaleway C14 Glacier
+    
+    Scaleway S3/C14 is now called S3/Glacier. Since Glacier is already
+    mentioned in the Rclone Scaleway section, let's just remove this
+    entry from here.
+
+commit 2aa264b33cb098f37eaeea43a87feec36b391ad0
+Author: Lesmiscore <nao20010128@gmail.com>
+Date:   Sat Oct 1 00:10:57 2022 +0900
+
+    smb: backend to support SMB - fixes #2042
+
+commit 4e078765f9429dc315a337e6d7826ebadd35c969
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Wed Sep 28 08:44:32 2022 +0200
+
+    docs: improve description of make command in install docs
+
+commit 7fbc928a19431f566b87c8c33d98fbb5099dad5f
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Mon Sep 26 19:14:10 2022 +0200
+
+    docs: remove "After" in systemd mount example
+    
+    See #6459
+
+commit 27096323db392ebc2dc4ad6b872a8e21ea7e7d1a
+Author: Lorenzo Milesi <lorenzo.milesi@yetopen.com>
+Date:   Mon Sep 26 19:11:29 2022 +0200
+
+    docs: remove "After" in automount example
+    
+    According to [systemd.automount](https://www.freedesktop.org/software/systemd/man/systemd.automount.html) manual
+    
+    > Note that automount units are separate from the mount itself, so you should
+    > not set After= or Requires= for mount dependencies here.
+    > For example, you should not set After=network-online.target or
+    > similar on network filesystems. Doing so may result in an ordering cycle.
+
+commit 7e547822d667e644576d250655fa3013a7159076
+Author: Dimitri Papadopoulos Orfanos <3234522+DimitriPapadopoulos@users.noreply.github.com>
+Date:   Mon Sep 19 20:51:07 2022 +0200
+
+    build: update GitHub actions to latest versions
+
+commit 67625b1dbd763e70be4995441c1e18ac631249e9
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Sep 19 19:45:52 2022 +0100
+
+    ftp: increase timeouts on tests as they were failing locally
+
+commit 88086643f72d718c10ecb9831e101e5c787eb5cb
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Sep 15 08:56:29 2022 +0100
+
+    ftp: adapt to library changes to fix connection errors #6426
+    
+    In https://github.com/jlaffaye/ftp/commit/212daf295f the upstream FTP
+    library changed the way adding your own dialer works which meant that
+    connections when using explicit FTP were failing.
+    
+    This patch reworks our connection code to bring it into the
+    expectations of the library.
+
+commit 5f13d84135f8d164cb17562a602de2af157295d6
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sat Sep 17 16:40:45 2022 +0100
+
+    compress: add extra debugging in case we have a repeat of #6434
+
+commit 07efdb55fa025939a488765ad216a906654186a7
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Sep 15 17:38:56 2022 +0100
+
+    compress: fix error handling to not use or return nil objects #6434
+
+commit fb6ddd680c6c2723dcc682a5a0ecb8070b25395c
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Sep 14 09:02:58 2022 +0100
+
+    compress: fix crash due to nil metadata #6434
+    
+    Before this fix, if an error ocurred reading the metadata, it could be
+    set as nil and then used, causing a crash.
+    
+    This fix changes the readMetadata function so it returns an error, and
+    the error is always set if the metadata returned is nil.
+
+commit bc09105d2eaef22b388b88d2196e1caa4f3f13ee
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Sep 18 11:30:59 2022 +0100
+
+    Add Richard Bateman to contributors
+
+commit 4f374bc26475316aaf9f4392c58017507de9e057
+Author: Richard Bateman <richard@batemansr.us>
+Date:   Sat Sep 17 10:28:44 2022 -0600
+
+    s3: add --s3-sse-customer-key-base64 to supply keys with binary data
+    
+    Fixes #6400
+
+commit 1c99661d8cfbafa86ea186a3d0c8f07993a122a9
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Sep 15 17:18:35 2022 +0100
+
+    onedrive: disable change notify in China region since it is not supported
+    
+    Fixes #6444
+
+commit 04b54bbb1e077a005f925cac7c7f7d158a37703c
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 16 16:57:23 2022 +0100
+
+    Add Alexander Knorr to contributors
+
+commit 90cda2d6c225293f5b73c035d6ba803ca3451445
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 16 16:57:23 2022 +0100
+
+    Add Dmitry Deniskin to contributors
+
+commit dbd9ce78e6ccb8769f027b3948b8c078996d5ffd
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Sep 16 16:57:23 2022 +0100
+
+    Add Øyvind Heddeland Instefjord to contributors
+
+commit cbc18e2693da296770f22eec8fce92518f9b72dc
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Sep 15 17:06:31 2022 +0100
+
+    docs: update install docs to make more consistent
+    
+    This also adds repology badges where appropriate to show versions in
+    external repositories.
+
+commit 67c675d7ad4962bc2f5aab5601d7bae721da7b44
+Author: Alexander Knorr <106825+opexxx@users.noreply.github.com>
+Date:   Thu Sep 15 17:12:39 2022 +0200
+
+    docs: add cholateley package manager to install instructions
+
+commit c080b39e470913367f7e12a08a8c27e2706dd32e
+Author: Dmitry Deniskin <110819396+ddeniskin@users.noreply.github.com>
+Date:   Thu Sep 15 17:04:34 2022 +0200
+
+    s3: add support for IONOS Cloud Storage
+
+commit 8504da496bcd7a3e8468d99b3fd1a294c396bb91
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Sep 15 11:57:07 2022 +0100
+
+    Changelog updates from Version v1.59.2
+
+commit 67240bd5410a8c4ea700359073eb420fc2812072
+Author: Lesmiscore <nao20010128@gmail.com>
+Date:   Thu Sep 15 00:45:35 2022 +0900
+
+    sftp: fix directory creation races
+    
+    If mkdir fails then before this change it would have thrown an
+    error.
+    
+    After this change, if the error indicated that the directory
+    already exists then the error is not returned to the user.
+    
+    This fixes a race condition when two rclone threads are trying to
+    create the same directory.
+
+commit 6ce0168ba53555053f90f1e6f50c45e51ddf2255
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Sun Sep 4 10:14:11 2022 +0200
+
+    docs: better alignment of icons
+    
+    Fixes issue with spacing between icon and text in backend docs headers.
+    
+    This reverts the changes from PR #5889 and #5701, which aligned menu/dropdown items when
+    icons have different sizes, and implements an alternative fix which gives slightly better
+    results, and also is more of a native Font Awesome solution:
+    
+    Font Awesome icons are designed on grid and share a consistent height. But they vary in
+    width depending on how wide or narrow each symbol is. If you prefer to work with icons
+    that have a consistent width, adding fa-fw will render each icon using the same width.
+
+commit 67f5f04a77b97e11ddfad3107f8c062bd851eba1
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Fri Sep 9 00:18:18 2022 +0200
+
+    build: fix lint option max-issues-per-linter
+
+commit 91f8894285c451dd62b3b82f757a2ecd5cb08097
+Author: Øyvind Heddeland Instefjord <instefjord@outlook.com>
+Date:   Mon Sep 5 21:54:41 2022 +0200
+
+    ftp: Add force_list_hidden option
+    
+    Forces the use of `LIST -a` command
+    when listing a directory which should
+    list all hidden folders and files.
+
+commit 655d63b4fde02698422cb039b0e0e76a0e5b8301
+Author: partev <petrosyan@gmail.com>
+Date:   Wed Sep 14 06:14:32 2022 -0400
+
+    docs: fix a typo: aftering -> after
+
+commit d3d843a11d4a85bc9ed72f369d82d53f888cc047
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Sep 12 20:43:53 2022 +0100
+
+    fs: warn the user when using a remote name without a colon
+    
+    A very common mistake for new users of rclone is to use a remote name
+    without a colon. This can be on the command line or in the config when
+    setting up a crypt backend.
+    
+    This change checks to see if the user uses a path which matches a
+    remote name and gives an NOTICE like this if they do
+    
+        NOTICE: "remote" refers to a local folder, use "remote:" to refer to your remote or "./remote" to hide this warning
+    
+    See: https://forum.rclone.org/t/sync-to-onedrive-personal-lands-file-in-localfilesystem-but-not-in-onedrive/32956
+
+commit 57803bee22df737fe58282c54b47583fa0991d05
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Sep 12 20:30:34 2022 +0100
+
+    build: update tidy-beta to new layout
+
+commit be53dcc9c97737b524bd3144364d9b2f74113fda
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Sep 12 11:54:35 2022 +0100
+
+    docs: add more information about --track-renames
+    
+    See: https://forum.rclone.org/t/feature-question-how-does-rclone-track-renames-and-moves/32911/4
+
+commit bd787e8f457705de9072335fda879f575da4f3cf
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Sep 5 16:19:50 2022 +0100
+
+    filter: Fix incorrect filtering with UseFilter context flag and wrapping backends
+    
+    In this commit
+    
+    8d1fff9a8237c64f local: obey file filters in listing to fix errors on excluded files
+    
+    We started using filters in the local backend so the user could short
+    circuit troublesome files/directories at a low level.
+    
+    However this caused a number of integration tests to fail. This turned
+    out to be in backends wrapping the local backend. For example the
+    combine backend test failed because it changes the paths passed to the
+    local backend so they no longer match the paths in the current filter.
+    
+    To fix this, a new feature flag `FilterAware` was added and the
+    UseFilter context flag is only passed to backends which support it. As
+    the wrapping backends don't support the flag, this fixes the problems
+    in the integration tests.
+    
+    In future the wrapping backends could modify the active filters to
+    match the path modifications and then they could set the FilterAware
+    flag.
+    
+    See #6376
+
+commit 3cb7734eac78b562f9ef1a572f586e5e5198c45c
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sat Aug 13 11:59:42 2022 +0100
+
+    config: move locking to fix fatal error: concurrent map read and map write
+    
+    Before this change we assumed that github.com/Unknwon/goconfig was
+    threadsafe as documented.
+    
+    However it turns out it is not threadsafe and looking at the code it
+    appears that making it threadsafe might be quite hard.
+    
+    So this change increases the lock coverage in configfile to cover the
+    goconfig uses also.
+    
+    Fixes #6378
+
+commit d08ed7d1e93e2b40d2de03ee73081a61b26031bd
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Aug 11 16:45:21 2022 +0100
+
+    ftp: add notes on how to avoid deadlocks with concurrency - fixes #6370
+
+commit f279e4ab01235d1d62bf5b19bd6cccea344916f7
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Sep 5 12:10:59 2022 +0100
+
+    Add Josh Soref to contributors
+
+commit 35349657cd2d5708b2b02a8f8810270c4c999abb
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Tue Aug 30 19:51:00 2022 +0200
+
+    docs/sftp: document use of chunk_size option in sftp remote paired with serve sftp
+    
+    Related to 0008cb4934242757606b4c1305971fc51e7adef4
+
+commit ce3b65e6dc0866cac041b82aabbf790ebd9778b6
+Author: Josh Soref <2119212+jsoref@users.noreply.github.com>
+Date:   Sat Aug 13 22:56:32 2022 -0400
+
+    all: fix spelling across the project
+    
+    * abcdefghijklmnopqrstuvwxyz
+    * accounting
+    * additional
+    * allowed
+    * almost
+    * already
+    * appropriately
+    * arise
+    * bandwidth
+    * behave
+    * bidirectional
+    * brackets
+    * cached
+    * characters
+    * cloud
+    * committing
+    * concatenating
+    * configured
+    * constructs
+    * current
+    * cutoff
+    * deferred
+    * different
+    * directory
+    * disposition
+    * dropbox
+    * either way
+    * error
+    * excess
+    * experiments
+    * explicitly
+    * externally
+    * files
+    * github
+    * gzipped
+    * hierarchies
+    * huffman
+    * hyphen
+    * implicitly
+    * independent
+    * insensitive
+    * integrity
+    * libraries
+    * literally
+    * metadata
+    * mimics
+    * missing
+    * modification
+    * multipart
+    * multiple
+    * nightmare
+    * nonexistent
+    * number
+    * obscure
+    * ourselves
+    * overridden
+    * potatoes
+    * preexisting
+    * priority
+    * received
+    * remote
+    * replacement
+    * represents
+    * reproducibility
+    * response
+    * satisfies
+    * sensitive
+    * separately
+    * separator
+    * specifying
+    * string
+    * successful
+    * synchronization
+    * syncing
+    * šenfeld
+    * take
+    * temporarily
+    * testcontents
+    * that
+    * the
+    * themselves
+    * throttling
+    * timeout
+    * transaction
+    * transferred
+    * unnecessary
+    * using
+    * webbrowser
+    * which
+    * with
+    * workspace
+    
+    Signed-off-by: Josh Soref <2119212+jsoref@users.noreply.github.com>
+
+commit 0008cb4934242757606b4c1305971fc51e7adef4
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Mon Aug 29 14:32:00 2022 +0200
+
+    docs: document that serve sftp uses chunk size 32 KiB
+    
+    See #6404
+
+commit 2ea5b4f0b85b9a3231c3a0be184540458ca1d443
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Tue Aug 30 10:26:03 2022 +0200
+
+    Add YFdyh000 to contributors
+
+commit b5818454f7a5f147861230206bd16b5448669c85
+Author: YFdyh000 <yfdyh000@gmail.com>
+Date:   Tue Aug 30 16:23:29 2022 +0800
+
+    onedrive: cleanup brand name
+
+commit 555def2da7f425225b9f8657593733b5d71f901e
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Sun Aug 28 13:21:57 2022 +0200
+
+    build: add package comments to silence revive linter
+
+commit 02b761310477959593a9eff437cbe422c87ecf24
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Wed Aug 24 09:19:17 2022 +0200
+
+    docs/jottacloud: improve description of the standard authentication
+
+commit b342c6cf9c5668270e546cf0324c8d7fa71d7f67
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Sat Aug 27 18:30:55 2022 +0200
+
+    docs/ftp: improve documentation of anonymous ftp - fixes #5650
+
+commit 8a6857c295af68f929a94b616ce3299b19ae7765
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Sun Aug 28 10:19:39 2022 +0200
+
+    Add Simon Bos to contributors
+
+commit 21fd13f10df1273085a0e27ec3c6c18053223088
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Sun Aug 28 10:18:33 2022 +0200
+
+    Add Ryan Morey to contributors
+
+commit 5cc7797f9eee2e23c94096130a4457d4e92bb8b7
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Sun Aug 28 10:18:14 2022 +0200
+
+    Add anonion to contributors
+
+commit 8bf2d6b6c819b5533330b9a7cc5ff4ab93c0d3dd
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Sun Aug 28 10:16:37 2022 +0200
+
+    Add João Henrique Franco to contributors
+
+commit 85eb9776bd5b700e0be0cdd23dab280f0d2d946d
+Author: João Henrique Franco <joaohenrique.franco@gmail.com>
+Date:   Mon Aug 22 05:43:54 2022 -0300
+
+    crypt: fix typo in comment
+    
+    strign -> string
+
+commit 47539ec0e6bba833cf178dec8f3a8f16684ad598
+Author: anonion <aman207@users.noreply.github.com>
+Date:   Sun Aug 21 14:09:33 2022 -0600
+
+    docs: fix minor typo in onedrive docs
+
+commit 58b327a9f6382f1c104c7ed8e1355ad14806d20d
+Author: Ryan Morey <4590343+rmorey@users.noreply.github.com>
+Date:   Thu Aug 18 15:14:26 2022 -0400
+
+    docs: fix typo in filter pattern example
+
+commit 1107da7247db32199fde92f42c916bcb4c60dc3f
+Author: Simon Bos <simonbos9@gmail.com>
+Date:   Mon Aug 8 18:48:36 2022 +0200
+
+    dlna: specify SSDP interface names from command line
+
+commit 8d1fff9a8237c64f73cc02e273921efde1553487
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Aug 11 12:20:34 2022 +0100
+
+    local: obey file filters in listing to fix errors on excluded files
+    
+    Fixes #6376
+
+commit 2c5923ab1a76e321ed752377c54e73ced2ae3c4c
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Aug 11 12:20:17 2022 +0100
+
+    filter: make sure we check --files-from when looking for a single file
+
+commit 1ad22b8881ceaa6219f0bc1ae67507c74f49bdb2
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Aug 9 11:15:04 2022 +0100
+
+    gcs: add --gcs-endpoint flag and config parameter
+    
+    See: https://forum.rclone.org/t/how-to-modify-google-cloud-storage-endpoint-uri/32342
+
+commit 0501773db13221171e102781809378a6555dd312
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Aug 9 10:44:54 2022 +0100
+
+    azureblob,b2,s3: fix chunksize calculations producing too many parts
+    
+    Before this fix, the chunksize calculator was using the previous size
+    of the object, not the new size of the object to calculate the chunk
+    sizes.
+    
+    This meant that uploading a replacement object which needed a new
+    chunk size would fail, using too many parts.
+    
+    This fix fixes the calculator to take the size explicitly.
+
+commit cb8842941b8ebca7f627320ad40c4b013df3c5aa
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Aug 9 12:57:29 2022 +0100
+
+    Add Mark Trolley to contributors
+
+commit 5439a2c5c67b6e8bbd21210ad232a70d0b0db74e
+Author: Mark Trolley <marktrolley@gmail.com>
+Date:   Mon Aug 8 19:08:07 2022 -0400
+
+    docs: fix script installation command on downloads page
+    
+    Script installation instructions in `downloads.md` differ from those in
+    `install.md` and fail on MacOS.
+
+commit d347ac0154a824c25dcd8c4dd982be7703a2495d
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Aug 8 10:03:25 2022 +0100
+
+    local: disable xattr support if the filesystems indicates it is not supported
+    
+    Before this change, if rclone was run with `-M` on a filesystem
+    without xattr support, it would error out.
+    
+    This patch makes rclone detect the not supported errors and disable
+    xattrs from then on. It prints one ERROR level message about this.
+    
+    See: https://forum.rclone.org/t/metadata-update-local-s3/32277/7
+
+commit 9f33eb2e658aab4161712ee69f86feafd30b0887
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Aug 8 19:00:56 2022 +0100
+
+    Changelog updates from Version 1.59.1
+
+commit fe801b8fefd13fdba865abb52d6ac5218f74709e
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Aug 8 19:01:03 2022 +0100
+
+    Add Joram Schrijver to contributors
+
+commit 6b158f33a3dfb22ab09640193ca784c7ec2965cf
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Thu Aug 4 16:31:16 2022 +0200
+
+    serve sftp: document legacy code for checksum detection
+    
+    See #6351
+
+commit 5a6d233924abd3796ec3d9d7fe3c4993fcc708a3
+Author: Joram Schrijver <i@joram.io>
+Date:   Sat Aug 6 02:59:00 2022 +0200
+
+    dlna: fix SOAP action header parsing - fixes #6354
+    
+    Changes in github.com/anacrolix/dms changed upnp.ServiceURN to include a
+    namespace identifier. This identifier was previously hardcoded, but is
+    now parsed out of the URN. The old SOAP action header parsing logic was
+    duplicated in rclone and did not handle this field. Resulting responses
+    included a URN with an empty namespace identifier, breaking clients.
+
+commit df513ca90a9dfff9f7dca9cc38e6ddc832afb597
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Aug 5 17:43:53 2022 +0100
+
+    build: update dependencies
+
+commit 49bb640bae0aac7367d43bf9f16c7e3ead8a62ab
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jul 20 10:49:00 2022 +0100
+
+    accounting: fix panic in core/stats-reset with unknown group - fixes #6327
+    
+    This also adds tests for the rc commands for stats groups
+
+commit 98fd00a655cada0bda53b7be3d54dd656a8ab21c
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Aug 4 16:11:22 2022 +0100
+
+    serve sftp: fix checksum detection - Fixes #6351
+    
+    Before this change, rclone serve sftp operating with a new rclone
+    after the md5sum/sha1sum detection was reworked to just run a plain
+    `md5sum`/`sha1sum` command in
+    
+    3ea82032e796d1f1 sftp: support md5/sha1 with rsync.net #3254
+    
+    Failed to signal to the remote that md5sum/sha1sum wasn't supported as
+    in
+    
+    71e172a139f00291 serve/sftp: support empty "md5sum" and "sha1sum" commands
+    
+    We unconditionally return good hashes even if the remote being served
+    doesn't support the hash type in question.
+    
+    This fix checks the hash type is supported and returns an error
+    
+        MD5 hash not supported
+    
+    When the backend is first contacted this will cause the sftp backend
+    to detect that the hash type isn't available.
+    
+    Unfortunately this may have cached the wrong state so editing or
+    remaking the config may be necessary to fix it.
+
+commit 16039b350da44ebb9e8e5d5e5f4b07144d207daf
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Aug 5 15:23:44 2022 +0100
+
+    fs: fix parsing of times and durations of the form "YYYY-MM-DD HH:MM:SS"
+    
+    Before this fix, the parsing code gave an error like this
+    
+        parsing "2022-08-02 07:00:00" as fs.Time failed: expected newline
+    
+    This was due to the Scan call failing to read all the data.
+    
+    This patch fixes that, and redoes the tests
+
+commit ebe86c6cec4b699397dc8c9d3e2a3b28c48fa3ab
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Jul 29 17:01:59 2022 +0100
+
+    s3: add --s3-decompress flag to download gzip-encoded files
+    
+    Before this change, if an object compressed with "Content-Encoding:
+    gzip" was downloaded, a length and hash mismatch would occur since the
+    go runtime automatically decompressed the object on download.
+    
+    If --s3-decompress is set, this change erases the length and hash on
+    compressed objects so they can be downloaded successfully, at the cost
+    of not being able to check the length or the hash of the downloaded
+    object.
+    
+    If --s3-decompress is not set the compressed files will be downloaded
+    as-is providing compressed objects with intact size and hash
+    information.
+    
+    See #2658
+
+commit 1f5e7ce598e1d22ecd9d6c69b50106e80d8aa620
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Jul 29 16:39:02 2022 +0100
+
+    lib/readers: add GzipReader
+
+commit 4b981100db7196fe221e8daa7e77a9dce1a171d7
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Jul 28 11:49:19 2022 +0100
+
+    s3: refactor to use generated code instead of reflection to copy structs
+
+commit 4344a3e2ea8e78127371a5feb476344171898950
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 26 17:58:57 2022 +0100
+
+    s3: implement --s3-version-at flag - Fixes #1776
+
+commit 1542a979f9a7e29214ec44b9fa5729c3208528b3
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jul 27 10:46:28 2022 +0100
+
+    s3: refactor f.list() to take an options struct as it had too many parameters
+
+commit 81d242473a8530f2500770c9fbabdacfbbd051f4
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 26 15:03:32 2022 +0100
+
+    s3: implement Purge to purge versions and `backend cleanup-hidden`
+
+commit 0ae171416f393ff67354608091bc177606f8d72a
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Jul 25 16:06:15 2022 +0100
+
+    s3: implement --s3-versions flag - See #1776
+
+commit a59fa2977d7e5b3747bf942c7fc5abe366cbcd72
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Jul 25 15:56:17 2022 +0100
+
+    s3: factor different listing versions into separate objects
+
+commit 724391806943cf420bddd4d8e70a26dd0b96b647
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Jul 25 16:05:17 2022 +0100
+
+    s3: implement backend versioning command to get/set bucket versioning
+
+commit fa49971d4982497f36280ff3cdb8fe9195285a75
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 26 17:53:35 2022 +0100
+
+    docs: move time/duration option docs to the main docs
+
+commit 77e3512714d2d90ac8f44de6961d67d3bcd40c52
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 26 16:50:55 2022 +0100
+
+    fstests: Make InternalTestFiles so the internal tests know the current state
+
+commit 337b43e7e40991b681a44d9a008d9c397c8d67c3
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 26 16:50:32 2022 +0100
+
+    fstests: make ReadObject publically accessible
+
+commit 6fd9e3d7170551b8272e08a206ae5d8fbf1ecebf
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Aug 5 16:35:41 2022 +0100
+
+    build: reformat comments to pass go1.19 vet
+    
+    See: https://go.dev/doc/go1.19#go-doc
+
+commit 876f791ecdf6a7801a74492e8a6b9050b9ffe8a9
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Aug 5 16:04:54 2022 +0100
+
+    Revert "build: lint with go1.18 until golangci-lint is updated"
+    
+    This reverts commit 2170376d1be915a24cc94046e30017ce47cfabc6.
+
+commit 918bd6d3c3b28606e0208ee657b25274e4a06a18
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Jul 17 12:47:40 2022 +0100
+
+    dropox: fix ChangeNotify was unable to decrypt errors
+    
+    Before this fix, the dropbox backend wasn't decoding the file names
+    received in changenotify events into rclone standard format.
+    
+    This meant that changenotify events for filenames which had encoded
+    characters were failing to be decrypted properly if wrapped in crypt.
+    
+    See: https://forum.rclone.org/t/rclone-vfs-cache-says-file-name-too-long/31535
+
+commit f49be033c6f03a858639353c949447f04017d7b0
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Jul 25 10:52:49 2022 +0100
+
+    mega: Fix nil pointer exception when bad node received
+    
+    Fixes: #6336
+
+commit 2a817e21cb3b047a3b8c9909b072892506763bc1
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Jul 28 17:43:05 2022 +0100
+
+    vfs: fix excess CPU used by VFS cache cleaner looping
+    
+    Before this change the VFS cache cleaner would loop indefinitely while
+    the cache was above quota. This used up all the CPU.
+    
+    This fix prevents the cache cleaner from looping. It will be kicked on
+    ENOSPACE and run in its scheduled time otherwise so this should be
+    sufficient.
+    
+    See: https://forum.rclone.org/t/vfs-keeps-checking-same-files/32120
+
+commit a07d376fb111944cdd74521446caa6f3ba43b0d4
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Jul 28 18:14:04 2022 +0100
+
+    vfs: reduce memory usage by re-ordering commonly used structures
+
+commit e749bc58f4e54833fc860c682040f465794d377d
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Jul 28 17:35:14 2022 +0100
+
+    vfs: reduce memory use by embedding sync.Cond
+
+commit 821e084f28d07d4c4327ccee6a62a02c2fbf9afd
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Aug 3 17:15:59 2022 +0100
+
+    combine: fix errors with backends shutting down while in use
+    
+    Before this patch backends could be shutdown when they fell out of the
+    cache when they were in use with combine. This was particularly
+    noticeable with the dropbox backend which gave this error when
+    uploading files after the backend was Shutdown.
+    
+        Failed to copy: upload failed: batcher is shutting down
+    
+    This patch gets the combine remote to pin them until it is finished.
+    
+    See: https://forum.rclone.org/t/rclone-combine-upload-failed-batcher-is-shutting-down/32168
+
+commit 2170376d1be915a24cc94046e30017ce47cfabc6
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Aug 3 12:07:52 2022 +0100
+
+    build: lint with go1.18 until golangci-lint is updated
+    
+    See: https://github.com/golangci/golangci-lint/pull/3037
+
+commit 8125b1cf085fc10d325cdff752b84511fc8c7886
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Aug 3 17:39:55 2022 +0100
+
+    build: update to v3 of golangci-lint action
+
+commit ba60984f33676fac258cbebd3088a0c73b3bb717
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Aug 2 18:47:43 2022 +0100
+
+    build: update to go1.19 and make go1.17 the minimum required version
+
+commit a875320e37a6eb349899f4f6058ed0c692d92a60
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Aug 1 17:51:46 2022 +0100
+
+    sync,operations: optimise --copy-dest and --compare-dest
+    
+    Before this change --compare-dest and --copy-dest would check to see
+    if the compare/copy object existed first, before seeing if the
+    destination object was present.
+    
+    This is inefficient, because in most --copy-dest syncs the destination
+    will be present and the compare/copy object need never be tested.
+    --compare-dest syncs may also be speeded up if they are done to the
+    same directory repeatedly.
+    
+    This fixes the problem by re-arranging the logic so if the transfer is
+    not needed then the compare/copy object is never tested.
+    
+    See: https://forum.rclone.org/t/union-with-copy-dest-enabled-is-slower-than-expected/32172
+
+commit 639624184deea156387d616f26bcce9577672dd0
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Aug 3 15:03:15 2022 +0100
+
+    build: fix android build after GitHub actions change
+    
+    Before this change the android build started failing with
+    
+        gomobile: ANDROID_NDK_HOME specifies /usr/local/lib/android/sdk/ndk/25.0.8775105
+        which is unusable: unsupported API version 16 (not in 19..33)
+    
+    This was caused by a change to github actions, but is ultimately due
+    to an issue in gomobile with the newest version of the SDK.
+    
+    This change fixes the problem by declaring a minimum API version of 21
+    and using version 21 compilers to build everything and using the
+    default NDK in github actions.
+    
+    See: https://github.com/actions/virtual-environments/issues/5930
+    See: https://github.com/lightningnetwork/lnd/issues/6651
+
+commit fe84cca1ad1d018a2a3b2b356689f64b2d08f3ad
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Aug 3 13:14:51 2022 +0100
+
+    Revert "build: disable revive linter pending a fix in golangci-lint"
+    
+    This reverts commit 7a24c173f6669172d845221c7e37e5824fa13fb7.
+
+commit 9d3958bd0b0f26ee597cb732761d705913bacdb1
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Aug 3 10:11:16 2022 +0100
+
+    build: fix formatting after golangci-lint update
+
+commit 3a8e52de74e81f499f44a47a937552378d5bc83b
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Jul 29 17:40:05 2022 +0100
+
+    dropbox: fix infinite loop on uploading a corrupted file
+    
+    Before this change, if rclone attempted to upload a file which read
+    more bytes than the size it declared then the uploader would enter an
+    infinite loop.
+    
+    See: https://forum.rclone.org/t/transfer-percentages-100-again/32109
+
+commit 72227a01519f4cc9b0a1ecd390785c9d1d09d5d0
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Fri Jul 15 10:01:06 2022 +0200
+
+    jottacloud: do not store username in config when using standard auth
+    
+    Previously, with standard auth, the username would be stored in config - but only after
+    entering the non-standard device/mountpoint sequence during config (a feature introduced
+    with #5926). Regardless of that, rclone always requests the username from the api at
+    startup (NewFS).
+    
+    In #6270 (commit 9dbed02329456c71d2052a6365041deda94bc020) this was changed to always
+    store username in config (consistency), and then also use it to avoid the repeated
+    customer info request in NewFs (performance). But, as reported in #6309, it did not work
+    with legacy auth, where user enters username manually, if user entered an email address
+    instead of the internal username required for api requests. This change was therefore
+    recently reverted.
+    
+    The current commit takes another step back to not store the username in config during
+    the non-standard device/mountpoint config sequence (consistentcy). The username will
+    now only be stored in config when using legacy auth, where it is an input parameter.
+
+commit 9f40cb114a2c751c5821205c25fb373cc6dee1a8
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 12 21:10:04 2022 +0100
+
+    Revert "jottacloud: always store username in config and use it to avoid initial api request"
+    
+    This reverts commit 9dbed02329456c71d2052a6365041deda94bc020.
+    
+    See: #6309
+
+commit 2f461f13e3efe603bdd8fb4057f3e8242a59956f
+Author: Lesmiscore <nao20010128@gmail.com>
+Date:   Fri Jul 22 12:52:48 2022 +0900
+
+    internetarchive: handle hash symbol in the middle of filename
+
+commit 7a24c173f6669172d845221c7e37e5824fa13fb7
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jul 20 23:06:35 2022 +0100
+
+    build: disable revive linter pending a fix in golangci-lint
+    
+    The revive linter got extremely slow in golangci-lint 1.47.1 causing
+    the CI to time out.
+    
+    Disable for the time being until it is fixed.
+    
+    See: https://github.com/golangci/golangci-lint/issues/2997
+
+commit fb60aeddaeffdc422eb35150f280844f2ba6a14c
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jul 20 23:06:45 2022 +0100
+
+    Add Jordi Gonzalez Muñoz to contributors
+
+commit 695736d1e4797d88004f23fd5017c9e38cec3532
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jul 20 23:06:45 2022 +0100
+
+    Add Steve Kowalik to contributors
+
+commit f0396070ebc24762c2f90a91835aa90367aa2872
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Tue Jul 19 09:15:50 2022 +0200
+
+    sftp: fix issue with WS_FTP by working around failing RealPath
+
+commit f1166757ba3cc0af744344f0010b1e7ed5383619
+Author: Jordi Gonzalez Muñoz <jordigonzm@gmail.com>
+Date:   Wed Jul 20 18:20:12 2022 +0200
+
+    librclone: add PHP bindings and test program
+
+commit 9b76434ad5730a55d8cfbaaf19410067485ee575
+Author: Steve Kowalik <steven@wedontsleep.org>
+Date:   Wed Jul 20 19:37:34 2022 +1000
+
+    drive: make --drive-stop-on-upload-limit obey quota exceeded error
+    
+    Extend the shouldRetry function by also checking for the quotaExceeded
+    reason, and since this function appeared to be untested, add a test case
+    for the existing errors and this new one.
+    
+    Fixes #615
+
+commit 440d0cd1797788c31d2c722f54c85c6f898a2441
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Jul 17 13:40:45 2022 +0100
+
+    s3: fix --s3-no-head panic: reflect: Elem of invalid type s3.PutObjectInput
+    
+    In
+    
+    22abd785eba35ca2 s3: implement reading and writing of metadata #111
+    
+    The reading information of objects was refactored to use the
+    s3.HeadObjectOutput structure.
+    
+    Unfortunately the code branch with `--s3-no-head` was not tested
+    otherwise this panic would have been discovered.
+    
+    This shows that this is path is not integration tested, so this adds a
+    new integration test.
+    
+    Fixes #6322
+
+commit a047d30eca9b1570822db3ab7705a5606d15e5dd
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Jul 18 23:38:39 2022 +0100
+
+    Add Yen Hu to contributors
+
+commit 03d0f331f7dcea7bc610e96ac887e5912764fb66
+Author: Yen Hu <61753151+0x59656e@users.noreply.github.com>
+Date:   Mon Jul 18 00:07:23 2022 +0800
+
+    onedrive: rename Onedrive(cn) 21Vianet to Vnet Group
+    
+    The old site had shown a redirect page to the new one since 2021-4-21.
+    https://www.21vianet.com
+    The official site had renamed to Vnet Group also.
+    https://www.vnet.com/en/about
+
+commit 049674aeabf234567b76a4c2a42f60e11b1cbc7f
+Author: Lesmiscore <nao20010128@gmail.com>
+Date:   Sat Jul 16 12:11:09 2022 +0900
+
+    backend/internetarchive: ignore checksums for files using the different method
+
+commit 50f053cadaa9d487768fef759829356235f0b35e
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Tue Jul 12 12:13:58 2022 +0100
+
+    dropbox: fix hang on quit with --dropbox-batch-mode off
+    
+    This problem was created by the fact that we are much more diligent
+    about calling Shutdown now, and the dropbox backend had a hang if the
+    batch mode was "off" in the Shutdown method.
+    
+    See: https://forum.rclone.org/t/dropbox-lsjson-in-1-59-stuck-on-commiting-upload/31853
+
+commit 140af43c26eadef09bc04cbe8de55ea71d3a2f5e
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jul 13 15:59:24 2022 +0100
+
+    build: add 32 bit test runner to avoid problems like #6311
+
+commit f46718887660db0fba3082f15daaec8c5c367126
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Jul 14 20:12:53 2022 +0100
+
+    Add Evan Spensley to contributors
+
+commit 4a4379b3128de7ace692120e1c5ae84754d42047
+Author: Evan Spensley <epspensley@gmail.com>
+Date:   Sun Jul 10 10:42:04 2022 -0400
+
+    jobs: add ability to stop group
+    
+    Adds new rc call to stop all running jobs in a group. Fixes #5561
+
+commit 8c02fe7b89a284156f2ebf04901d78769b6f9f43
+Author: Nick Naumann <nick.naumann@mailbox.tu-dresden.de>
+Date:   Mon Jul 11 23:31:30 2022 +0200
+
+    sync: update docs and error messages to reflect fixes to overlap checks
+
+commit 11be920e90ec2c87e1db96d3c5534963c1fa6118
+Author: Nick Naumann <nick.naumann@mailbox.tu-dresden.de>
+Date:   Mon Jul 11 23:26:50 2022 +0200
+
+    sync: add filter-sensitivity to --backup-dir option
+    
+    The old Overlapping function and corresponding tests have been removed, as it has been completely replaced by the OverlappingFilterCheck function.
+
+commit 8c19b355a5ae8949821394865f6d13c6069a3d53
+Author: albertony <12441419+albertony@users.noreply.github.com>
+Date:   Wed Jul 13 12:29:32 2022 +0200
+
+    docs: fix links to mount command from install docs
+
+commit 67fd60275a6187c41c4944545c2145cd28bc330d
+Author: r-ricci <ricci@disroot.org>
+Date:   Mon Jul 11 18:34:06 2022 +0100
+
+    union: fix panic due to misalignment of struct field in 32 bit architectures
+    
+    `FS.cacheExpiry` is accessed through sync/atomic.
+    According to the documentation, "On ARM, 386, and 32-bit MIPS, it is
+    the caller's responsibility to arrange for 64-bit alignment of 64-bit
+    words accessed atomically. The first word in a variable or in an
+    allocated struct, array, or slice can be relied upon to be 64-bit
+    aligned."
+    Before commit 1d2fe0d8564bc679ece166c24b24e6fe7dc1455c this field was
+    aligned, but then a new field was added to the structure, causing the
+    test suite to panic on linux/386.
+    No other field is used with sync/atomic, so `cacheExpiry` can just be
+    placed at the beginning of the stuct to ensure it is always aligned.
+
+commit b310490fa5976b0f3e7b3ee9e323f88764687a5b
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sat Jul 9 21:17:47 2022 +0100
+
+    union: fix multiple files being uploaded when roots don't exist
+    
+    See: https://forum.rclone.org/t/union-backend-copying-to-all-remotes-while-it-shouldnt/31781
+
+commit 0ee0812a2bea94295318e962bb4bbd0877b035bd
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sat Jul 9 21:13:06 2022 +0100
+
+    union: fix duplicated files when using directories with leading /
+    
+    See: https://forum.rclone.org/t/union-backend-copying-to-all-remotes-while-it-shouldnt/31781
+
+commit 55bbff6346bb2a1ee3798844860a92fee7636918
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Jul 4 16:26:08 2022 +0100
+
+    operations: add --server-side-across-configs global flag for any backend
+
+commit 9c6cfc1ff0412b75592067e9017bf36a0e555078
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Jul 10 15:40:30 2022 +0100
+
+    combine: throw error if duplicate directory name is specified
+    
+    See: https://forum.rclone.org/t/v1-59-combine-qs/31814
+
+commit f753d7cd42ee262530fe99543cc81b9e741a7223
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sun Jul 10 15:34:48 2022 +0100
+
+    combine: fix docs showing `remote=` instead of `upstreams=`
+    
+    See: https://forum.rclone.org/t/v1-59-combine-qs/31814
+
+commit f5be1d6b65daee33a811308fef6171721fc56f32
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Sat Jul 9 20:43:17 2022 +0100
+
+    Start v1.60.0-DEV development
