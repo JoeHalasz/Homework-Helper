@@ -533,11 +533,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
   BACKGROUND_COLOR[2] = 60;
 
   DWORD dwWidth = GetSystemMetrics(SM_CXSCREEN);
-
+  DWORD dwHeight = GetSystemMetrics(SM_CYSCREEN);
+ 
 	editSize.left = dwWidth - WIDTH - 25;
 	editSize.top = 25;
 	editSize.right = editSize.left + WIDTH;
 	editSize.bottom = editSize.top + HEIGHT;
+
+  printf("THIS IS THE WIDTH %d\n", dwWidth);
+  printf("THIS IS THE HEIGHT %d\n", dwHeight);
+  printf("THIS IS WHERE IT STARTS %d\n", editSize.left);
 
   MSG         Msg;
   WNDCLASSEX  WndClsEx = {0};
