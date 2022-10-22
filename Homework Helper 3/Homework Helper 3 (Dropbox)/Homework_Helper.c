@@ -536,6 +536,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
   DWORD dwHeight = GetSystemMetrics(SM_CYSCREEN);
  
 	editSize.left = dwWidth - WIDTH - 25;
+  if (dwWidth == 1600){
+    editSize.left -= WIDTH;
+  }
 	editSize.top = 25;
 	editSize.right = editSize.left + WIDTH;
 	editSize.bottom = editSize.top + HEIGHT;
