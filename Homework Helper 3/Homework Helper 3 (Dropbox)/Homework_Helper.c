@@ -22,7 +22,7 @@ int NUM_ITEMS = 1;
 BOOL loaded = FALSE;
 HBRUSH bkbrush = NULL;
 
-BOOL ONLINE = FALSE;
+BOOL ONLINE = TRUE;
 
 char* days[] = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
 char* daysCaps[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -234,7 +234,7 @@ int AddButtonPressed(){
 
 	char numItems[10] = "";
 	sprintf(numItems, "%d", NUM_ITEMS);
-  
+
 	strcat(text, numItems);
 	strcat(text, ". ");
 	strcat(text, parts[0]);
@@ -532,7 +532,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
   BACKGROUND_COLOR[1] = 60;
   BACKGROUND_COLOR[2] = 60;
 
-	editSize.left = 1920 - WIDTH - 25;
+  DWORD dwWidth = GetSystemMetrics(SM_CXSCREEN);
+
+	editSize.left = dwWidth - WIDTH - 25;
 	editSize.top = 25;
 	editSize.right = editSize.left + WIDTH;
 	editSize.bottom = editSize.top + HEIGHT;
