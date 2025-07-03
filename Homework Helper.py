@@ -9,7 +9,7 @@ import time
 WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday","friday","saturday","sunday"]
 MONTHS = ["january","febuary","march","april","may","june","july","august","september","october","november","december"]
 
-MONTHS_DICT = {"january":31,"febuary":28,"march":31,"april":30,"may":31,"june":30,"july":31,"august":31,"september":30,"october":31,"november":30,"december":31}
+MONTHS_DICT = {"january":31,"february":28,"march":31,"april":30,"may":31,"june":30,"july":31,"august":31,"september":30,"october":31,"november":30,"december":31}
 
 date = datetime.now().strftime("%m-%d").split("-")
 
